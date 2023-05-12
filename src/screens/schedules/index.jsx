@@ -17,7 +17,7 @@ import { width } from "../../common/constant";
 import { useNavigation } from "@react-navigation/native";
 
 const TextButtonTab = {
-  LichHoc: "Lịch học",
+  LichHoc: "Lịch dạy",
   LichThi: "Lịch thi",
 };
 
@@ -338,6 +338,7 @@ export const ItemSchedule = ({ item }) => {
 };
 
 export const ItemChildSchedule = ({ data, item, maLop, style }) => {
+  console.log('data', data);
   return (
     <View style={[style.wrap]}>
       <View style={[style.header]}>
@@ -385,7 +386,7 @@ export const ItemChildSchedule = ({ data, item, maLop, style }) => {
             source={require("../../resources/icons/teacher-board.png")}
             style={{ width: SIZE_ICON, height: SIZE_ICON, ...styles.iconImage }}
             resizeMode="stretch"
-          /> 
+          />
           <Text style={[style.bodyText]} numberOfLines={1}>
             {data.SoTietHoc}
           </Text>
@@ -409,42 +410,49 @@ export const ItemChildSchedule = ({ data, item, maLop, style }) => {
   );
 };
 
+export const OPT = {
+  ADD: `ADD`,
+  UPDATE: `UPDATE`,
+}
+
 function ItemChildScheduleFooter({ itemdiemdanh, item }) {
   const nav = useNavigation();
-
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+      <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-          <Entypo name="open-book" size={20} color="blue" onPress={() => {
+          <Entypo name="open-book" size={18} color="blue" onPress={() => {
             nav.navigate(Screens.DiemDanhSinhVien, { itemdiemdanh: itemdiemdanh, item: item })
           }} />
         </View>
-        <Text style={{ color: 'blue', fontSize:11 }} numberOfLines={1}>Điểm danh</Text>
+        <Text style={{ color: 'blue', fontSize: 10 }} numberOfLines={1}>Điểm danh</Text>
       </View>
-      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+      <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-          <Entypo name="open-book" size={20} color="#CC66FF" onPress={() => {
+          <Entypo name="open-book" size={18} color="#CC66FF" onPress={() => {
             nav.navigate(Screens.BangGhiDiem, { itemdiemdanh: itemdiemdanh, item: item })
           }} />
         </View>
-        <Text style={{ color: '#CC66FF', fontSize:11 }}>Bảng điểm</Text>
+        <Text style={{ color: '#CC66FF', fontSize: 10 }}>Bảng điểm</Text>
       </View>
-      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+      <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-          <Entypo name="open-book" size={20} color="#99CCFF" onPress={() => {
+          <Entypo name="open-book" size={18} color="#99CCFF" onPress={() => {
             nav.navigate(Screens.DanhSachSoGiaoAn, { itemdiemdanh: itemdiemdanh, item: item })
           }} />
         </View>
-        <Text style={{ color: '#99CCFF', fontSize:11 }}>Sổ giáo án</Text>
+        <Text style={{ color: '#99CCFF', fontSize: 10 }}>Sổ giáo án</Text>
       </View>
-      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+      <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-          <Entypo name="open-book" size={20} color="#54FF9F" onPress={() => {
-            nav.navigate(Screens.KhaiBaoThucGiang, { itemdiemdanh: itemdiemdanh, item: item })
+          <Entypo name="open-book" size={18} color="#54FF9F" onPress={() => {
+            if (itemdiemdanh.isKetThucKGBB) {
+              return;
+            }
+            nav.navigate(Screens.KhaiBaoThucGiang, { itemdiemdanh: itemdiemdanh, item: item, opt: itemdiemdanh.isDaKhaiBao ? OPT.UPDATE : OPT.ADD })
           }} />
         </View>
-        <Text style={{ color: '#54FF9F' , fontSize:11}}>Thực giảng</Text>
+        <Text style={{ color: '#54FF9F', fontSize: 10 }}>Thực giảng</Text>
       </View>
     </View>
   )
@@ -501,45 +509,6 @@ function TabLichHoc() {
     <View style={[bodys.wrap]}>
       {/* <View style={[bodys.wrapTop]}> */}
       <View style={{ width: "100%", alignItems: "center" }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <View style={{ textAlign: 'center', paddingRight: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-              <Entypo name="open-book" size={16} color="blue" onPress={() => {
-                nav.navigate(Screens.DiemDanhSinhVien, {
-                })
-              }} />
-            </View>
-            <Text style={{ color: 'blue', fontSize:11 }}>Điểm danh</Text>
-          </View>
-          <View style={{ textAlign: 'center', paddingRight: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-              <Entypo name="open-book" size={24} color="#CC66FF" onPress={() => {
-                nav.navigate(Screens.BangGhiDiem, {
-                })
-              }} />
-            </View>
-            <Text style={{ color: '#CC66FF' }}>Bảng điểm</Text>
-          </View>
-          <View style={{ textAlign: 'center', paddingRight: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-              <Entypo name="open-book" size={24} color="#99CCFF" onPress={() => {
-                nav.navigate(Screens.SoGiaoAn, {
-                })
-              }} />
-            </View>
-            <Text style={{ color: '#99CCFF' }}>Sổ giáo án</Text>
-          </View>
-          <View style={{ textAlign: 'center', paddingRight: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-              <Entypo name="open-book" size={24} color="#54FF9F" onPress={() => {
-                nav.navigate(Screens.KhaiBaoThucGiang, {
-                })
-              }} />
-            </View>
-            <Text style={{ color: '#54FF9F' }}>Thực giảng</Text>
-          </View>
-        </View>
-
         <View style={[bodys.wrapTop]}>
           <IconButton
             icon={() => {

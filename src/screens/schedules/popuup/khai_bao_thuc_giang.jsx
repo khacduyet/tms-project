@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Text, StyleSheet, useColorScheme, View, TextInput as MyTextInput } from 'react-native';
 import Checkbox from 'expo-checkbox';
+import { useDispatch, useSelector } from "react-redux";
 import HeaderBack from "../../../common/header";
 import { Screens } from "../../../common/constant";
 import { SafeAreaView } from "react-native";
@@ -17,76 +18,161 @@ import { DateToUnix, formatDateStringGMT } from "../../../common/common";
 import { useEffect } from "react";
 import { AuthServices, QuyTrinhServices } from "../../../services/danhmuc.service";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useMemo } from "react";
 import { ToastMessage } from "../../../common/components";
+import { OPT } from "..";
 
 export default function KhaiBaoThucGiang({ route }) {
     const nav = useNavigation();
-    const { itemdiemdanh, item } = route.params;
+    const { itemdiemdanh, item, opt } = route.params;
+
+    const [value, setValue] = useState(null);
+    const [isChecked, setChecked] = useState(false);
+    const [listBoPhan, setListBoPhan] = useState([]);
+    const [listKiemNhiem, setListKiemNhiem] = useState([]);
+    const [selected, setSelected] = useState([]);
+    const [quyTrinh, setQuyTrinh] = useState({
+        Id: null,
+        listChiTiet: []
+    })
+
+    const getQuyTrinh = async () => {
+        if (opt === OPT.UPDATE) {
+            let res = await QuyTrinhServices.DanhSachMonHoc.GetQuyTrinhKhaiBaoGioGiang(itemdiemdanh.IdQuyTrinhKhaiBaoGioGiang);
+            if (res) {
+                setQuyTrinh(res.Data)
+            }
+        }
+    }
+
+    const GetDanhSachBoPhanTheoLoai = async () => {
+        let res = await QuyTrinhServices.DanhMuc.GetDanhSachBoPhanTheoLoai();
+        if (res) {
+            setListBoPhan(res)
+        }
+    }
+    const GetListdmQuyDinhKiemNhiem = async () => {
+        let res = await QuyTrinhServices.DanhMuc.GetListdmQuyDinhKiemNhiem({});
+        if (res) {
+            setListKiemNhiem(res)
+        }
+    }
+
+    useEffect(() => {
+        GetDanhSachBoPhanTheoLoai();
+        GetListdmQuyDinhKiemNhiem();
+        getQuyTrinh();
+    }, []);
+
     return (
         <SafeAreaView>
             <HeaderBack header={Screens.KhaiBaoThucGiang} />
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View style={styles.items}>
-                        <TextInput
-                            label={'Lớp'}
-                            value={itemdiemdanh.TenLopHoc}
-                            editable={false}
-                            variant="standard" />
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={[styles.items, styles.flex]}>
-                            <TextInput
-                                label={'Ngày'}
-                                editable={false}
-                                value={formatDateStringGMT(item.Ngay, "dd/mm/yyyy")}
-                                variant="standard" />
-                        </View>
-                        <View style={[styles.items, styles.flex]}>
-                            <TextInput
-                                label={'Buổi'}
-                                value={itemdiemdanh.TenCaHoc}
-                                editable={false}
-                                variant="standard" />
-                        </View>
-                    </View>
-                    <View style={styles.items}>
-                        <TextInput
-                            label={'Môn'}
-                            value={itemdiemdanh?.TenMonHoc}
-                            editable={false}
-                            variant="standard" />
-                    </View>
-                    <View style={styles.items}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            {/* <Checkbox.Android
-                                status={checked ? "checked" : "unchecked"}
-                                onPress={() => {
-                                    setChecked(!checked);
+            <ScrollView style={{ height: '90%', }}>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <View style={styles.items}>
+                            <Dropdown
+                                data={listBoPhan.map(x => {
+                                    return {
+                                        label: x.TenBoPhan,
+                                        value: x.Id
+                                    }
+                                })}
+                                labelField={'label'}
+                                valueField={'value'}
+                                style={[styles.dropdown, styles.flex]}
+                                value={quyTrinh?.IdBoPhan}
+                                onChange={(e) => {
+                                    setQuyTrinh({ ...quyTrinh, IdBoPhan: e.value })
                                 }}
-                            /> */}
-                            <Checkbox
-                            // value={x?.IsDaDay}
-                            // onValueChange={(e) => {
-                            //     setForm(e, idx, 'IsDaDay')
-                            // }}
                             />
-                            <Text style={{ paddingLeft: 8 }}>Xác nhận đã dạy:</Text>
+                        </View>
+                        <View style={styles.items}>
+                            <TextInput
+                                label={'Lớp'}
+                                value={itemdiemdanh.TenLopHoc}
+                                editable={false}
+                                variant="standard" />
+                        </View>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Ngày'}
+                                    editable={false}
+                                    value={formatDateStringGMT(item.Ngay, "dd/mm/yyyy")}
+                                    variant="standard" />
+                            </View>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Buổi'}
+                                    value={itemdiemdanh.TenCaHoc}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                        </View>
+                        <View style={styles.items}>
+                            <TextInput
+                                label={'Môn'}
+                                value={itemdiemdanh?.TenMonHoc}
+                                editable={false}
+                                variant="standard" />
+                        </View>
+                        {/* <View style={styles.items}>
+                            <Text>Vị trí kiêm nghiệm</Text>
+                            <MultiSelect
+                                style={styles.dropdownp}
+                                placeholderStyle={styles.placeholderStyle}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                inputSearchStyle={styles.inputSearchStyle}
+                                iconStyle={styles.iconStyle}
+                                search
+                                data={listKiemNhiem.map(a => {
+                                    return {
+                                        label: a.Ten,
+                                        value: a.Id
+                                    }
+                                })}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Chọn "
+                                searchPlaceholder="Search..."
+                                value={quyTrinh?.}
+                                onChange={item => {
+                                    setSelected(item);
+                                }}
+                                renderLeftIcon={() => (
+                                    <AntDesign
+                                        style={styles.icon}
+                                        color="black"
+                                        name="Safety"
+                                        size={20}
+
+                                    />
+                                )}
+                                selectedStyle={styles.selectedStyle} />
+                        </View> */}
+                        <View style={styles.items}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Checkbox
+                                    value={isChecked}
+                                    onValueChange={setChecked}
+                                    color={isChecked ? '#4630EB' : undefined}
+                                />
+                                <Text style={{ paddingLeft: 8 }}>Xác nhận đã dạy: {itemdiemdanh.SoTietHoc}</Text>
+                            </View>
                         </View>
                     </View>
+                    <View style={styles.markdown}></View>
+                    <View>
+                        <TabIndex itemdiemdanh={itemdiemdanh} item={item} isChecked={isChecked} quyTrinh={quyTrinh} />
+                    </View>
                 </View>
-                <View style={styles.markdown}></View>
-                <View>
-                    <TabIndex itemdiemdanh={itemdiemdanh} item={item} />
-                </View>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }
 // ---- Tab index --------
 
-function TabIndex({ itemdiemdanh, item }) {
+function TabIndex({ itemdiemdanh, item, isChecked, quyTrinh }) {
     const [tabIndex, setTabIndex] = useState(0);
     const TextButtonTab = {
         NoiDung: "Cập nhật nội dung",
@@ -98,6 +184,7 @@ function TabIndex({ itemdiemdanh, item }) {
         listChiTiet_DanhGia: [],
         listChiTiet_HSCaBiet: []
     })
+    const currentUser = useSelector((state) => state.currentUser);
     const GetListSoGiaoAnByLopMon = async () => {
         let data = {
             ListIddmLopHoc: itemdiemdanh.listIddmLopHoc,
@@ -114,13 +201,12 @@ function TabIndex({ itemdiemdanh, item }) {
     }, []);
 
     const GhiLai = async () => {
-        let currentUser = await AuthServices.currentUser();
         let data = {
-            IdBoPhan: 49,
+            IdBoPhan: quyTrinh.IdBoPhan,
             IdUserGiaoVien: currentUser.Id,
-            Nam: 2022,
-            ToiTuan: 30,
-            TuTuan: 30,
+            Nam: new Date(item.Ngay).getFullYear(),
+            ToiTuan: item.Tuan,
+            TuTuan: item.Tuan,
             listChiTiet: [
                 {
                     Ngay: item.Ngay,
@@ -146,11 +232,10 @@ function TabIndex({ itemdiemdanh, item }) {
             ]
         }
         console.log('data', data);
-        // let res = await QuyTrinhServices.DanhSachMonHoc.SetQuyTrinhKhaiBaoGioGiang(data);
-        // if (res) {
-        //     console.log(res);
-        //     ToastMessage(res.Detail);
-        // }
+        let res = await QuyTrinhServices.DanhSachMonHoc.SetQuyTrinhKhaiBaoGioGiang(data);
+        if (res) {
+            ToastMessage(res.Detail);
+        }
     }
 
     return (
@@ -215,6 +300,7 @@ function TabIndex({ itemdiemdanh, item }) {
                 </View>
                 <View style={[styles.btn, {}]}>
                     <Button icon="check" mode="contained"
+                        disabled={!isChecked}
                         onPress={GhiLai}
                         style={{ width: '75%' }}>
                         Xác nhận
@@ -442,9 +528,21 @@ const Table = ({ listSo, itemdiemdanh, item, obj }) => {
     const [isThoiGian, setIsThoiGian] = React.useState(0);
     const [visible, setVisible] = React.useState(false)
     const [index, setIndex] = useState(0);
+    const [listGiangDay, setListGiangDay] = useState([]);
+    const [selected, setSelected] = useState([]);
     const showDialog = (idx) => {
-        setIndex(idx)
-        setVisible(true)
+        if (selected.length) {
+            let arr = [];
+            let obj = {}
+            selected?.forEach(x => {
+                obj = listSo.find((a) => a.Id === x)
+            })
+            arr.push(obj);
+            setListGiangDay(arr)
+            setIndex(idx)
+            setVisible(true)
+        }
+        else ToastMessage('Vui lòng chọn lấy từ sổ giáo án');
     };
 
     const hideDialog = () => {
@@ -493,17 +591,17 @@ const Table = ({ listSo, itemdiemdanh, item, obj }) => {
     // FC
     const [arrChua, setArrChua] = useState([]);
     const [listCheck, setListCheck] = useState([]);
-    const [listGiangDay, setListGiangDay] = useState([]);
-    const [selected, setSelected] = useState([]);
-    const checkGioGiang = (item) => {
-        let arr = [];
-        let obj = {}
-        item.forEach(x => {
-            obj = listSo.find((a) => a.Id === x)
-        })
-        arr.push(obj);
-        setListGiangDay(arr)
-    }
+    // const [listGiangDay, setListGiangDay] = useState([]);
+    // const [selected, setSelected] = useState([]);
+    // const checkGioGiang = (item) => {
+    //     let arr = [];
+    //     let obj = {}
+    //     item.forEach(x => {
+    //         obj = listSo.find((a) => a.Id === x)
+    //     })
+    //     arr.push(obj);
+    //     setListGiangDay(arr)
+    // }
     //  
     return (
         <View style={styles.body}>
@@ -561,7 +659,7 @@ const Table = ({ listSo, itemdiemdanh, item, obj }) => {
                     /> */}
 
                     <MultiSelect
-                        style={styles.dropdown}
+                        style={styles.dropdownp}
                         placeholderStyle={styles.placeholderStyle}
                         selectedTextStyle={styles.selectedTextStyle}
                         inputSearchStyle={styles.inputSearchStyle}
@@ -575,11 +673,10 @@ const Table = ({ listSo, itemdiemdanh, item, obj }) => {
                         })}
                         labelField="label"
                         valueField="value"
-                        placeholder="Select item"
+                        placeholder="Chọn sổ giáo án"
                         searchPlaceholder="Search..."
                         value={selected}
                         onChange={item => {
-                            checkGioGiang(item);
                             setSelected(item);
                         }}
                         renderLeftIcon={() => (
@@ -588,6 +685,7 @@ const Table = ({ listSo, itemdiemdanh, item, obj }) => {
                                 color="black"
                                 name="Safety"
                                 size={20}
+
                             />
                         )}
                         selectedStyle={styles.selectedStyle} />
@@ -809,7 +907,33 @@ const styles = {
         height: 100,
         justifyContent: "flex-start"
     },
-
+    // 
+    dropdownp: {
+        height: 50,
+        backgroundColor: 'transparent',
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.5,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+    },
+    selectedTextStyle: {
+        fontSize: 14,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
+    icon: {
+        marginRight: 5,
+    },
+    selectedStyle: {
+        borderRadius: 12,
+    },
 }
 
 const bodys = {

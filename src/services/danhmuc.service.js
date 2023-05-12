@@ -165,7 +165,14 @@ export const QuyTrinhServices = {
             let _header = await getHeaders();
             return post(kbgg + `/DanhMuc/GetListdmDanhGia`, data, _header)
         },
-        
+        GetListdmQuyDinhKiemNhiem: async (data) => {
+            let _header = await getHeaders();
+            return post(kbgg + `/DanhMuc/GetListdmQuyDinhKiemNhiem`, data, _header)
+        },
+        GetDanhSachBoPhanTheoLoai: async () => {
+            let _header = await getHeaders();
+            return get(smarteos + `CoCauNhanSu/GetDanhSachBoPhanTheoLoai?MaLoaiBoPhan=KHOA`, _header)
+        },
     }
 
 }

@@ -37,7 +37,14 @@ export const Screens = {
     Attendance: 'Điểm danh',
     Academic: 'KQHT',
     More: 'Thêm',
-    TrainingPlan: 'Kế hoạch đào tạo'
+    TrainingPlan: 'Kế hoạch đào tạo',
+    DiemDanhSinhVien: 'Điểm danh sinh viên',
+    GhiChu: 'Lý do',
+    BangGhiDiem: 'Bảng ghi điểm',
+    SoGiaoAn: 'Sổ giáo án',
+    ChiTietBaiGiang: 'Chi tiết bài giảng',
+    KhaiBaoThucGiang: 'Khai báo thực giảng',
+    DanhSachSoGiaoAn: 'Sổ giáo án danh sách',
 };
 
 export const TextButton = {

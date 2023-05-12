@@ -141,20 +141,7 @@ export default function Infor() {
           />
         </View>
         <View style={styles.items}>
-          <TextInput
-            style={styles.inputtext}
-            label={"Ngày"}
-            variant="standard"
-            value={formatDateStringGMT(syll?.NgaySinh, "dd/mm/yyyy")}
-            onFocus={() => {
-              setNameProp({
-                prop: "NgaySinh",
-                isParent: true,
-              });
-              setDate(syll?.NgaySinh);
-              showDatePicker();
-            }}
-          />
+        
         </View>
 
         <View style={styles.items}>

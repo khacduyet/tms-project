@@ -11,11 +11,10 @@ import { Colors, height, Screens } from "../../common/constant";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { IconButton } from "react-native-paper";
-import { QuyTrinhServices } from "../../services/danhmuc.service";
+import { AuthServices, QuyTrinhServices } from "../../services/danhmuc.service";
 import { ActivityIndicator } from "react-native";
 import { width } from "../../common/constant";
 import { useNavigation } from "@react-navigation/native";
-import moment from "moment";
 
 const TextButtonTab = {
   LichHoc: "Lịch học",
@@ -291,21 +290,10 @@ const data = () => {
 const WeekSchedule = ({ item }) => {
   return (
     <>
-      <View style={bodys.weekWrap}>
-        <Text
-          style={{
-            flex: 1,
-            textAlign: "center",
-            fontWeight: 600,
-            fontSize: 16,
-          }}
-        >
-          Tuần {item?.Tuan}
-        </Text>
-        <View style={{ flex: 3, borderBottomWidth: 1 }}></View>
-      </View>
-      {item?.listChiTiet.map((x, index) => {
-        return <ItemSchedule item={x} key={`${index}-${item?.Tuan}`} />;
+
+      {item?.map((x, index) => {
+        // return <ItemSchedule item={x} key={`${index}-${item?.Tuan}`} />;
+        return <ItemSchedule item={x} />;
       })}
     </>
   );
@@ -321,9 +309,8 @@ export const ItemSchedule = ({ item }) => {
           <Text style={{ fontSize: 20, fontWeight: 600 }}>
             {_date?.getDate()}
           </Text>
-          <Text style={{ fontSize: 12, textAlign: "center" }}>{`${
-            _date?.getMonth() + 1
-          }/${_date?.getFullYear()}`}</Text>
+          <Text style={{ fontSize: 12, textAlign: "center" }}>{`${_date?.getMonth() + 1
+            }/${_date?.getFullYear()}`}</Text>
         </View>
 
         <Ionicons
@@ -334,10 +321,11 @@ export const ItemSchedule = ({ item }) => {
         />
       </View>
       <View style={bodys.itemFlatRight}>
-        {item.listChiTiet.map((x, idx) => {
+        {item.ListCaHoc.map((x, idx) => {
           return (
             <ItemChildSchedule
               data={x}
+              item={item}
               maLop={item.MaLop}
               key={`${idx}-${x.ThoiGian}`}
               style={items}
@@ -349,7 +337,7 @@ export const ItemSchedule = ({ item }) => {
   );
 };
 
-export const ItemChildSchedule = ({ data, maLop, style }) => {
+export const ItemChildSchedule = ({ data, item, maLop, style }) => {
   return (
     <View style={[style.wrap]}>
       <View style={[style.header]}>
@@ -361,14 +349,14 @@ export const ItemChildSchedule = ({ data, maLop, style }) => {
           />
 
           <Text style={[style.headerleftTime]} numberOfLines={1}>
-            {data.ThoiGian}
+            {data.TenCaHoc}
           </Text>
         </View>
-        <View style={[style.headerRight]}>
+        {/* <View style={[style.headerRight]}>
           <Text style={[style.headerRightText]} numberOfLines={1}>
             {maLop}
           </Text>
-        </View>
+        </View> */}
       </View>
       <View style={[style.body]}>
         <View style={[style.bodyItem]}>
@@ -388,9 +376,18 @@ export const ItemChildSchedule = ({ data, maLop, style }) => {
             style={{ width: SIZE_ICON, height: SIZE_ICON, ...styles.iconImage }}
             resizeMode="stretch"
           />
-
           <Text style={[style.bodyText]} numberOfLines={1}>
-            {data.TenGiaoVien}
+            {data.TenLopHoc}
+          </Text>
+        </View>
+        <View style={[style.bodyItem]}>
+          <Image
+            source={require("../../resources/icons/teacher-board.png")}
+            style={{ width: SIZE_ICON, height: SIZE_ICON, ...styles.iconImage }}
+            resizeMode="stretch"
+          /> 
+          <Text style={[style.bodyText]} numberOfLines={1}>
+            {data.SoTietHoc}
           </Text>
         </View>
         <View style={[style.bodyItem]}>
@@ -401,13 +398,57 @@ export const ItemChildSchedule = ({ data, maLop, style }) => {
           />
 
           <Text style={[style.bodyText]} numberOfLines={1}>
-            {data.Phong}
+            {data.TenPhongHoc}
           </Text>
         </View>
+      </View>
+      <View style={[style.footer]}>
+        <ItemChildScheduleFooter itemdiemdanh={data} item={item} />
       </View>
     </View>
   );
 };
+
+function ItemChildScheduleFooter({ itemdiemdanh, item }) {
+  const nav = useNavigation();
+
+  return (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+          <Entypo name="open-book" size={20} color="blue" onPress={() => {
+            nav.navigate(Screens.DiemDanhSinhVien, { itemdiemdanh: itemdiemdanh, item: item })
+          }} />
+        </View>
+        <Text style={{ color: 'blue', fontSize:11 }} numberOfLines={1}>Điểm danh</Text>
+      </View>
+      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+          <Entypo name="open-book" size={20} color="#CC66FF" onPress={() => {
+            nav.navigate(Screens.BangGhiDiem, { itemdiemdanh: itemdiemdanh, item: item })
+          }} />
+        </View>
+        <Text style={{ color: '#CC66FF', fontSize:11 }}>Bảng điểm</Text>
+      </View>
+      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+          <Entypo name="open-book" size={20} color="#99CCFF" onPress={() => {
+            nav.navigate(Screens.DanhSachSoGiaoAn, { itemdiemdanh: itemdiemdanh, item: item })
+          }} />
+        </View>
+        <Text style={{ color: '#99CCFF', fontSize:11 }}>Sổ giáo án</Text>
+      </View>
+      <View style={{ textAlign: 'center', paddingRight: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+          <Entypo name="open-book" size={20} color="#54FF9F" onPress={() => {
+            nav.navigate(Screens.KhaiBaoThucGiang, { itemdiemdanh: itemdiemdanh, item: item })
+          }} />
+        </View>
+        <Text style={{ color: '#54FF9F' , fontSize:11}}>Thực giảng</Text>
+      </View>
+    </View>
+  )
+}
 
 function TabLichHoc() {
   const [time, setTime] = useState(data());
@@ -417,17 +458,17 @@ function TabLichHoc() {
 
   const getAllOptions = async () => {
     if (timeActive) {
+      let currentUser = await AuthServices.currentUser();
       let _thisTime = time[timeActive];
-      let _time = DateToFirstLastDateInMonth(_thisTime.value);
       let data = {
         Nam: _thisTime.value.getFullYear(),
-        TuNgayUnix: _time.FirstUnix,
-        DenNgayUnix: _time.LastUnix,
+        Thang: _thisTime.value.getMonth(),
+        IdGiaoVien: currentUser.Id
       };
-      let tkb = await QuyTrinhServices.ThoiKhoaBieu.GetThoiKhoaBieuSV(data);
+      let tkb = await QuyTrinhServices.LapThoiKhoaBieu.GetTKBThang(data);
       if (tkb) {
-        console.log("tkb", tkb);
-        setSchedules(tkb);
+        // console.log("tkb", tkb);
+        setSchedules(tkb ?? []);
         setLoading(false);
       }
     }
@@ -454,11 +495,51 @@ function TabLichHoc() {
     setLoading(true);
     setTimeActive(_atc);
   };
+  const nav = useNavigation();
 
   return (
     <View style={[bodys.wrap]}>
       {/* <View style={[bodys.wrapTop]}> */}
       <View style={{ width: "100%", alignItems: "center" }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ textAlign: 'center', paddingRight: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+              <Entypo name="open-book" size={16} color="blue" onPress={() => {
+                nav.navigate(Screens.DiemDanhSinhVien, {
+                })
+              }} />
+            </View>
+            <Text style={{ color: 'blue', fontSize:11 }}>Điểm danh</Text>
+          </View>
+          <View style={{ textAlign: 'center', paddingRight: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+              <Entypo name="open-book" size={24} color="#CC66FF" onPress={() => {
+                nav.navigate(Screens.BangGhiDiem, {
+                })
+              }} />
+            </View>
+            <Text style={{ color: '#CC66FF' }}>Bảng điểm</Text>
+          </View>
+          <View style={{ textAlign: 'center', paddingRight: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+              <Entypo name="open-book" size={24} color="#99CCFF" onPress={() => {
+                nav.navigate(Screens.SoGiaoAn, {
+                })
+              }} />
+            </View>
+            <Text style={{ color: '#99CCFF' }}>Sổ giáo án</Text>
+          </View>
+          <View style={{ textAlign: 'center', paddingRight: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
+              <Entypo name="open-book" size={24} color="#54FF9F" onPress={() => {
+                nav.navigate(Screens.KhaiBaoThucGiang, {
+                })
+              }} />
+            </View>
+            <Text style={{ color: '#54FF9F' }}>Thực giảng</Text>
+          </View>
+        </View>
+
         <View style={[bodys.wrapTop]}>
           <IconButton
             icon={() => {
@@ -510,23 +591,6 @@ function TabLichHoc() {
             }}
           />
 
-          {/* <TouchableOpacity
-          style={[bodys.dateButton]}
-          onPress={() => {
-            setShow(true);
-          }}
-        >
-          <Text style={[bodys.dateText]}>{date}</Text>
-        </TouchableOpacity>
-
-        {show && (
-          <MonthPicker
-            onClose={onHide}
-            isVisible={show}
-            data={data()}
-            onFinish={onFinish}
-          />
-        )} */}
         </View>
       </View>
       <View style={[bodys.wrapContent]}>
@@ -544,7 +608,7 @@ function TabLichHoc() {
         {!loading && (
           <FlatList
             data={schedules}
-            renderItem={({ item }) => <WeekSchedule item={item} />}
+            renderItem={({ item }) => <WeekSchedule item={schedules} />}
             keyExtractor={() => createGuid()}
             ListEmptyComponent={ListEmptyComponent}
             ListHeaderComponent={

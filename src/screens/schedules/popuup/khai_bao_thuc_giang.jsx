@@ -39,7 +39,8 @@ export default function KhaiBaoThucGiang({ route }) {
         if (opt === OPT.UPDATE) {
             let res = await QuyTrinhServices.DanhSachMonHoc.GetQuyTrinhKhaiBaoGioGiang(itemdiemdanh.IdQuyTrinhKhaiBaoGioGiang);
             if (res) {
-                setQuyTrinh(res.Data)
+                // console.log('res qt', res);
+                setQuyTrinh(res)
             }
         }
     }
@@ -231,13 +232,12 @@ function TabIndex({ itemdiemdanh, item, isChecked, quyTrinh }) {
                 }
             ]
         }
-        console.log('data', data);
+        // console.log('data', data);
         let res = await QuyTrinhServices.DanhSachMonHoc.SetQuyTrinhKhaiBaoGioGiang(data);
         if (res) {
             ToastMessage(res.Detail);
         }
     }
-
     return (
         <SafeAreaView>
             <View style={[styles.container]}>
@@ -279,7 +279,7 @@ function TabIndex({ itemdiemdanh, item, isChecked, quyTrinh }) {
                 <View style={[bodys.container, {
 
                 }]}>
-                    {tabIndex === 0 && <Table listSo={arr} itemdiemdanh={itemdiemdanh} item={item} obj={
+                    {tabIndex === 0 && <Table quyTrinh={quyTrinh} listSo={arr} itemdiemdanh={itemdiemdanh} item={item} obj={
                         {
                             obj: obj,
                             setObj: setObj
@@ -524,8 +524,8 @@ const DanhGia = ({ listSo, itemdiemdanh, item, obj }) => {
     )
 }
 
-const Table = ({ listSo, itemdiemdanh, item, obj }) => {
-    const [isThoiGian, setIsThoiGian] = React.useState(0);
+const Table = ({ quyTrinh, listSo, itemdiemdanh, item, obj }) => {
+    const [isThoiGian, setIsThoiGian] = React.useState(1);
     const [visible, setVisible] = React.useState(false)
     const [index, setIndex] = useState(0);
     const [listGiangDay, setListGiangDay] = useState([]);

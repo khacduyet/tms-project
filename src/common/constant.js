@@ -35,7 +35,7 @@ export const Screens = {
     Schedula: 'TKB',
     TestSchedule: 'Lịch thi',
     Attendance: 'Điểm danh',
-    Academic: 'KQHT',
+    Academic: 'Giờ giảng',
     More: 'Thêm',
     TrainingPlan: 'Kế hoạch đào tạo',
     DiemDanhSinhVien: 'Điểm danh sinh viên',

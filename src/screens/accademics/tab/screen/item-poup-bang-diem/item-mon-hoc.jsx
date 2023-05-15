@@ -13,14 +13,22 @@ export default function ItemMonHoc({ item }) {
             <View style={styles.item_title}>
                 <View style={styles.flex}>
                     <Entypo name="open-book" size={24} color="black" />
-                    <Text style={styles.item_title_header}>{item.MaMonHoc} - {item.TenMonHoc} ({item.TinChi} TC) </Text>
+                    <Text style={styles.item_title_header}>{item.TenGiaoVien}</Text>
                 </View>
             </View>
             <TouchableOpacity style={styles.item_content}>
+                <View style={styles.flex}>
+                    <Text style={styles.item_title_diem}> Chức danh: </Text>
+                    <Text style={styles.item_title_number_diem}> {item.ChucDanh} </Text>
+                </View>
+                <View style={styles.flex}>
+                    <Text style={styles.item_title_diem}> Học vị: </Text>
+                    <Text style={styles.item_title_number_diem}> {item.HocVi} </Text>
+                </View>
                 <View>
                     <View style={styles.flex}>
-                        <Text style={styles.item_title_diem}> Điểm trung bình:  </Text>
-                        <Text style={styles.item_title_number_diem}> {item.DiemTB} </Text>
+                        <Text style={styles.item_title_diem}> Tổng số giờ giảng:  </Text>
+                        <Text style={styles.item_title_number_diem}> {item.TongSoGioGiang} </Text>
                         <Pressable onPress={() => {
                             setDisplay(!isDisplay);
                         }}>
@@ -29,37 +37,38 @@ export default function ItemMonHoc({ item }) {
                         </Pressable>
                     </View>
                     {isDisplay && <View>
-                        <View>
-                            <Text style={styles.item_title_diem}> Điểm kiểm tra thường xuyên </Text>
-                            <View style={styles.flex}>
-                                {item.listDiemKTThuongXuyen.map(x => {
-                                    let _key = createGuid()
-                                    return <Text style={styles._diem} key={_key}> {x.Diem} </Text>
-                                })}
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',padding:5 }}>
+                            <View>
+                                <View><Text>Lý thuyết</Text></View>
+                                <View><Text style={styles.item_title_number_diem}>{item.LyThuyet}</Text></View>
                             </View>
-                        </View>
-                        <View style={styles.item_title_diem}>
-                            <Text> Điểm kiểm tra định kỳ </Text>
-                            <View style={styles.flex}>
-                                {item.listDiemKTDinhKy.map(x => {
-                                    let _key = createGuid()
-                                    return <Text style={styles._diem} key={_key}> {x.Diem} </Text>
-                                })}
+                            <View>
+                                <View><Text>Thực hành</Text></View>
+                                <View><Text style={styles.item_title_number_diem}>{item.ThucHanh}</Text></View>
+                            </View>
+                            <View>
+                                <View><Text>Kiêm nhiệm quy đổi</Text></View>
+                                <View><Text style={styles.item_title_number_diem}>{item.QuyDoiGioGiang}</Text></View>
                             </View>
                         </View>
                         <View style={styles.border_bottom}></View>
                     </View>}
                 </View>
                 <View style={styles.flex}>
-                    <Text style={styles.item_title_diem}> Điểm thi: </Text>
-                    <Text style={styles.item_title_number_diem}> {item.DiemThi} </Text>
+                    <Text style={styles.item_title_diem}> Giờ chuẩn: </Text>
+                    <Text style={styles.item_title_number_diem}> {item.GioTieuChuan} </Text>
                 </View>
                 <View style={styles.flex}>
-                    <Text style={[styles.item_title_diem]}> Điểm tổng kết: </Text>
-                    <Text style={[item.DiemTongKet > 5 ? styles.item_number_diem_dat : styles.item_number_diem_truot,]}> {Math.round(item.DiemTongKet)} </Text>
-                    <View style={[styles.item_xet_diem_thi,{flex:1}]}>
-                        <Text style={[item.DiemTongKet > 5 ? styles.item_number_diem_dat : styles.item_number_diem_truot, {textAlign:'right',flex:1}]}> {item.KetQua} </Text>
-                    </View>
+                    <Text style={styles.item_title_diem}> Giờ cố vấn học tập: </Text>
+                    <Text style={styles.item_title_number_diem}> {item.GioCoVan} </Text>
+                </View>
+                <View style={styles.flex}>
+                    <Text style={styles.item_title_diem}> Giờ thiếu: </Text>
+                    <Text style={styles.item_title_number_diem}> {item.GioThieu} </Text>
+                </View>
+                <View style={styles.flex}>
+                    <Text style={styles.item_title_diem}> Giờ vượt: </Text>
+                    <Text style={styles.item_title_number_diem}> {item.GioVuot} </Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -82,7 +91,9 @@ const styles = StyleSheet.create({
     item_title_number_diem: {
         fontSize: 15,
         paddingBottom: 5,
-        paddingRight: 5
+        paddingRight: 5,
+        color:'blue',
+        textAlign:'center'
     },
     item_xet_diem_thi: {
         flexDirection: 'row',
@@ -93,7 +104,7 @@ const styles = StyleSheet.create({
         borderColor: '#C6E2FF',
         borderWidth: 1,
         borderRadius: 8,
-        marginBottom:16
+        marginBottom: 16
     },
     flex: {
         flexDirection: 'row',

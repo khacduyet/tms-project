@@ -158,6 +158,10 @@ export const QuyTrinhServices = {
             let _header = await getHeaders();
             return post(kbgg + `/KhaiBaoGioGiang/GetListSinhVienLop`, data, _header)
         },
+        GetListThucGiangGiaoVien: async (data) => {
+            let _header = await getHeaders();
+            return post(kbgg + `/KhaiBaoGioGiang/GetListThucGiangGiaoVien`, data, _header)
+        },
     },
 
     DanhMuc: {

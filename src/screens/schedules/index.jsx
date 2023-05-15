@@ -338,7 +338,6 @@ export const ItemSchedule = ({ item }) => {
 };
 
 export const ItemChildSchedule = ({ data, item, maLop, style }) => {
-  console.log('data', data);
   return (
     <View style={[style.wrap]}>
       <View style={[style.header]}>
@@ -446,9 +445,9 @@ function ItemChildScheduleFooter({ itemdiemdanh, item }) {
       <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
           <Entypo name="open-book" size={18} color="#54FF9F" onPress={() => {
-            if (itemdiemdanh.isKetThucKGBB) {
-              return;
-            }
+            // if (itemdiemdanh.isKetThucKGBB) {
+            //   return;
+            // }
             nav.navigate(Screens.KhaiBaoThucGiang, { itemdiemdanh: itemdiemdanh, item: item, opt: itemdiemdanh.isDaKhaiBao ? OPT.UPDATE : OPT.ADD })
           }} />
         </View>

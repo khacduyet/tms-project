@@ -14,28 +14,27 @@ export default function LienHe({ quyTrinh }) {
     }
     quyTrinh.setQuyTrinh(data)
   }
-console.log(quyTrinh);
   return (
     <View>
       <View style={styles.items}>
         <TextInput
           onChangeText={(e) => setForm(e, 'DienThoai', 'itemSYLL')}
           value={quyTrinh?.itemSYLL?.DienThoai}
-          label={'Số diện thoại'}
+          label={'Số diện thoại (*)'}
           variant="standard" />
       </View>
       <View style={styles.items}>
         <TextInput
           onChangeText={(e) => setForm(e, 'Email', 'itemSYLL')}
           value={quyTrinh?.itemSYLL?.Email}
-          label={'Email'}
+          label={'Email (*)'}
           variant="standard" />
       </View>
       <View style={styles.items}>
         <TextInput
           onChangeText={(e) => setForm(e, 'ChoOHienNayDiaChi', 'itemSYLL')}
           value={quyTrinh?.itemSYLL?.ChoOHienNayDiaChi}
-          label={'Nơi ở hiện nay'}
+          label={'Nơi ở hiện nay (*)'}
           variant="standard" />
       </View>
     </View>

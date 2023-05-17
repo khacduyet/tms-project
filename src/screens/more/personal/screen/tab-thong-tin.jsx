@@ -7,12 +7,13 @@ import { Button } from 'react-native-paper';
 // import tab
 import ThongTin from '../screen/infor'
 import LienHe from '../screen/lien-he'
+import { ToastMessage } from "../../../../common/components";
 
 const TextButtonTab = {
   ThongTin: "Lý lịch",
   LienHe: "Liên hệ"
 };
-
+ 
 export default function TabThongTin() {
   const [tabIndex, setTabIndex] = useState(0);
   const [quyTrinh, setQuyTrinh] = useState({
@@ -20,7 +21,9 @@ export default function TabThongTin() {
   });
 
   const GhiLai = async () => {
-    console.log('quyTrinh',quyTrinh);
+    if (ValidateData(quyTrinh)) {
+
+    }
   };
 
   return <SafeAreaView>
@@ -56,7 +59,7 @@ export default function TabThongTin() {
           setQuyTrinh
         }} />}
       </View>
-      <View style={{flexDirection: "row", justifyContent: "center", paddingTop:30 }}>
+      <View style={{ flexDirection: "row", justifyContent: "center", paddingTop: 30 }}>
         <Button
           icon="check"
           mode="contained"
@@ -68,6 +71,30 @@ export default function TabThongTin() {
       </View>
     </View>
   </SafeAreaView>
+}
+
+const ValidateData = (quyTrinh) => {
+  if (!validVariable(quyTrinh.itemSYLL?.DienThoai)) {
+    ToastMessage('Vui lòng nhập số điện thoại');
+    return false;
+  }
+   else if (!validVariable(quyTrinh.itemSYLL?.Email)) {
+    ToastMessage('Vui lòng nhập Email');
+    return false;
+  }
+  else if (!validVariable(quyTrinh.itemSYLL?.ChoOHienNayDiaChi)) {
+    ToastMessage('Vui lòng nhập nơi ở hiện nay');
+    return false;
+  }
+  return true;
+}
+
+export function validVariable(value) {
+  if (value !== undefined && value !== null && value.toString().trim() !== "") {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 const styles = {

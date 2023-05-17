@@ -119,11 +119,11 @@ export default function Infor() {
               color="red"
             >
               <View style={styles.flex}>
-                <View style={styles.flex}>
+                <View style={[styles.flex,styles.mr]}>
                   <RadioButton.Android value={0} />
                   <Text>Nam</Text>
                 </View>
-                <View style={styles.flex}>
+                <View style={[styles.flex,styles.ml]}>
                   <RadioButton.Android value={1} />
                   <Text>Nữ</Text>
                 </View>
@@ -236,11 +236,17 @@ const styles = StyleSheet.create({
   },
   flex: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
   },
   RadioButton: {
     backgroundColor: "red",
     borderColor: "#fff",
   },
+  ml: {
+    marginLeft:20
+  },
+  mr: {
+    marginRight:20
+  }
 });

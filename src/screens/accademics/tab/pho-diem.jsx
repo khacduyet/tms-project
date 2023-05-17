@@ -119,7 +119,7 @@ export default function PhoDiem() {
             <Radio _objCtx={_objCtx} />
           </View>
           <View>
-            <ItemPhoDiem data={listChiTiet} title={'Điểm trung bình tích lũy'} />
+            <ItemPhoDiem data={data} title={'Điểm trung bình tích lũy'} />
           </View>
         </View>
         <View style={styles.marginBottom_16}>
@@ -131,7 +131,7 @@ export default function PhoDiem() {
             <Radio _objCtx={_objCtxMonHoc} />
           </View>
           <View>
-            <ItemPhoDiem data={listChiTiet} title={'Điểm tổng kết môn học'} />
+            <ItemPhoDiem data={data} title={'Điểm tổng kết môn học'} />
           </View>
         </View>
       </ScrollView>

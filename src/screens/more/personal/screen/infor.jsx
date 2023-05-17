@@ -69,14 +69,14 @@ export default function Infor() {
     GetSoYeuLyLichSinhVien();
   }, []);
 
-  const GhiLai = async () => {
-    let res = await QuyTrinhServices.ThongTinCaNhan.SetSoYeuLyLichSinhVien(
-      syll
-    );
-    if (res) {
-      ToastMessage(res);
-    }
-  };
+  // const GhiLai = async () => {
+  //   let res = await QuyTrinhServices.ThongTinCaNhan.SetSoYeuLyLichSinhVien(
+  //     syll
+  //   );
+  //   if (res) {
+  //     ToastMessage(res);
+  //   }
+  // };
 
   const setForm = (value, prop, propObj) => {
     if (value !== undefined) {
@@ -119,11 +119,11 @@ export default function Infor() {
               color="red"
             >
               <View style={styles.flex}>
-                <View style={styles.flex}>
+                <View style={[styles.flex,styles.mr]}>
                   <RadioButton.Android value={0} />
                   <Text>Nam</Text>
                 </View>
-                <View style={styles.flex}>
+                <View style={[styles.flex,styles.ml]}>
                   <RadioButton.Android value={1} />
                   <Text>Nữ</Text>
                 </View>
@@ -141,20 +141,7 @@ export default function Infor() {
           />
         </View>
         <View style={styles.items}>
-          <TextInput
-            style={styles.inputtext}
-            label={"Ngày"}
-            variant="standard"
-            value={formatDateStringGMT(syll?.NgaySinh, "dd/mm/yyyy")}
-            onFocus={() => {
-              setNameProp({
-                prop: "NgaySinh",
-                isParent: true,
-              });
-              setDate(syll?.NgaySinh);
-              showDatePicker();
-            }}
-          />
+        
         </View>
 
         <View style={styles.items}>
@@ -188,26 +175,6 @@ export default function Infor() {
         <View style={styles.items}>
           <TextInput
             style={styles.inputtext}
-            label={"Ngày vào đoàn"}
-            variant="standard"
-            value={formatDateStringGMT(
-              syll?.itemSYLL?.NgayKetNapDoan,
-              "dd/mm/yyyy"
-            )}
-            onFocus={() => {
-              setNameProp({
-                prop: "NgayKetNapDoan",
-                propParent: "itemSYLL",
-                isParent: false,
-              });
-              setDate(syll?.itemSYLL?.NgayKetNapDoan);
-              showDatePicker();
-            }}
-          />
-        </View>
-        <View style={styles.items}>
-          <TextInput
-            style={styles.inputtext}
             label={"Ngày vào đảng"}
             variant="standard"
             value={formatDateStringGMT(
@@ -225,7 +192,7 @@ export default function Infor() {
             }}
           />
         </View>
-        <View
+        {/* <View
           style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
         >
           <Button
@@ -236,7 +203,7 @@ export default function Infor() {
           >
             Xác nhận
           </Button>
-        </View>
+        </View> */}
       </View>
       <DateTimePickerModal
         date={date ? date : new Date()}
@@ -269,11 +236,17 @@ const styles = StyleSheet.create({
   },
   flex: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
   },
   RadioButton: {
     backgroundColor: "red",
     borderColor: "#fff",
   },
+  ml: {
+    marginLeft:20
+  },
+  mr: {
+    marginRight:20
+  }
 });

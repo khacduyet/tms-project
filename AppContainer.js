@@ -17,6 +17,13 @@ import Infor from './src/screens/more/personal/screen/infor';
 import AttendancePage from './src/screens/attendance';
 import TutorialPreview from './src/screens/tutorials';
 import TrainingPlanPage from './src/screens/traningplan';
+import DiemDanhSinhVien from './src/screens/schedules/popuup/diem_danh_sinh_vien';
+import GhiChu from './src/screens/schedules/popuup/ghi_chu';
+import BangGhiDiem from './src/screens/schedules/popuup/bang_ghi_diem';
+import SoGiaoAn from './src/screens/schedules/popuup/so_giao_an';
+import ChiTietBaiGiang from './src/screens/schedules/popuup/chi_tiet_bai_giang';
+import KhaiBaoThucGiang from './src/screens/schedules/popuup/khai_bao_thuc_giang';
+import DanhSachSoGiaoAn from './src/screens/schedules/popuup/danh_sach_so_giao_an';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +52,13 @@ function StackNavigator() {
     <Stack.Screen name={Screens.Personal} component={Canhan} />
     <Stack.Screen name={Screens.Attendance} component={AttendancePage} />
     <Stack.Screen name={Screens.TrainingPlan} component={TrainingPlanPage} />
+    <Stack.Screen name={Screens.DiemDanhSinhVien} component={DiemDanhSinhVien} />
+    <Stack.Screen name={Screens.GhiChu} component={GhiChu} />
+    <Stack.Screen name={Screens.BangGhiDiem} component={BangGhiDiem} />
+    <Stack.Screen name={Screens.SoGiaoAn} component={SoGiaoAn} />
+    <Stack.Screen name={Screens.ChiTietBaiGiang} component={ChiTietBaiGiang} />
+    <Stack.Screen name={Screens.KhaiBaoThucGiang} component={KhaiBaoThucGiang} />
+    <Stack.Screen name={Screens.DanhSachSoGiaoAn} component={DanhSachSoGiaoAn} />
   </Stack.Navigator>
 }
 

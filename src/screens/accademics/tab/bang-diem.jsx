@@ -9,16 +9,15 @@ import {
 } from "react-native";
 
 //import componet
-import DropDown from "../share-componet/DropDown/DropDown";
-import ItemDiemTrungBinh from "./screen/item-poup-bang-diem/item-diem-trung-binh";
+import DropDowns from "../share-componet/DropDown/DropDown";
 import ItemMonHoc from "./screen/item-poup-bang-diem/item-mon-hoc";
 import { useState } from "react";
 import { QuyTrinhServices } from "../../../services/danhmuc.service";
 import { useEffect } from "react";
 import { FlatList } from "react-native";
 import { createGuid } from "../../../common/common";
-import SearchBar from "../share-componet/Searchbar";
-import CheckBox from "../share-componet/check";
+import { useSelector } from "react-redux";
+import { Dropdown } from 'react-native-element-dropdown';
 
 export const listNam = [
   { label: "2022-2023", value: "1" },
@@ -30,57 +29,72 @@ export const listKy = [
 ];
 
 export default function BangDiem() {
+  const currentUser = useSelector((state) => state.currentUser);
+
   const [object, setObject] = useState({
     Nam: null,
-    Ky: listKy[0].value,
+    Ki: listKy[0].value,
+    IdKhoa: 49
   });
+  const [lstGiaoVien, setGiaoVien] = useState([]);
+  const [searchGiaoVien, setSearchGiaoVien] = useState([]);
+  const [IdUserGiaoVien, setIdUserGiaoVien] = useState(currentUser.Id);
+  const [listBoPhan, setListBoPhan] = useState([]);
 
-  const [input, setInput] = useState("");
-  const [checked, setChecked] = useState(false);
-  const [lstMonHoc, setLstMonHoc] = useState([]);
-
-  const [data, setData] = useState({});
-  const getData = async () => {
-    let res = await QuyTrinhServices.KetQuaHocTap.GetBangDiemOfSinhVien(object);
+  const GetDanhSachBoPhanTheoLoai = async () => {
+    let res = await QuyTrinhServices.DanhMuc.GetDanhSachBoPhanTheoLoai();
     if (res) {
-      setData(res);
-      setLstMonHoc(res.listMonHoc);
+      setListBoPhan(res)
+    }
+  }
+  const getData = async () => {
+    let data = {
+      Nam: 2022,
+      Ki: object.Ki,
+      IdUserGiaoVien: '',
+      IdKhoa: object.IdKhoa
+    }
+    let res = await QuyTrinhServices.DanhSachMonHoc.GetListThucGiangGiaoVien(data);
+    if (res) {
+      let arr = Array.isArray(res) ? res : [];
+      setGiaoVien(arr);
+      arr = arr.filter(x => x.IdUserGiaoVien === IdUserGiaoVien);
+      setSearchGiaoVien(arr.length ? arr : [])
     }
   };
 
   useEffect(() => {
+    GetDanhSachBoPhanTheoLoai()
     getData();
   }, [object]);
 
-  useEffect(() => {
-    let arr = null;
-    if (checked) {
-      arr = data?.listMonHoc?.filter(
-        (ele) =>
-          (ele.MaMonHoc.toLowerCase().includes(input.toLocaleLowerCase()) ||
-            ele.TenMonHoc.toLowerCase().includes(input.toLocaleLowerCase())) &&
-          ele.DiemTongKet < 5
-      );
-    } else if (input.length) {
-      arr = data?.listMonHoc?.filter(
-        (ele) =>
-          ele.MaMonHoc.toLowerCase().includes(input.toLocaleLowerCase()) ||
-          ele.TenMonHoc.toLowerCase().includes(input.toLocaleLowerCase())
-      );
-    } else {
-      arr = data?.listMonHoc;
-    }
-    setLstMonHoc(arr);
-  }, [input, checked]);
+  const ChonGiaoVien = (item) => {
+    let arr = lstGiaoVien.filter(x => x.IdUserGiaoVien === item.value);
+    setIdUserGiaoVien(item.value)
+    setSearchGiaoVien(arr)
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.dropdown}>
+          <DropDowns
+            data={listBoPhan.map(x => {
+              return {
+                label: x.TenBoPhan,
+                value: x.Id
+              }
+            })}
+            object={object}
+            setObject={setObject}
+            header={"IdKhoa"}
+          />
+        </View>
+        <View style={styles.dropdown}>
           <View style={styles.flex}>
             <TouchableOpacity style={styles.justify_content_between}>
               <View style={styles.left}>
-                <DropDown
+                <DropDowns
                   data={listNam}
                   object={object}
                   setObject={setObject}
@@ -90,43 +104,38 @@ export default function BangDiem() {
             </TouchableOpacity>
             <TouchableOpacity style={styles.justify_content_between}>
               <View style={styles.right}>
-                <DropDown
+                <DropDowns
                   data={listKy}
                   object={object}
                   setObject={setObject}
-                  header={"Ky"}
+                  header={"Ki"}
                 />
               </View>
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.marginBottom_16}>
-          <View style={styles.flex}>
-            <TouchableOpacity style={styles.justify_content_between}>
-              <View style={styles.left}>
-                <ItemDiemTrungBinh />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.justify_content_between}>
-              <View style={styles.right}>
-                <ItemDiemTrungBinh />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
         <View>
-          <SearchBar input={input} setInput={setInput} />
-          <CheckBox
-            data={"Môn học không đạt"}
-            checked={checked}
-            setChecked={setChecked}
+          <Dropdown
+            data={lstGiaoVien.map(x => {
+              return {
+                label: x.TenGiaoVien,
+                value: x.IdUserGiaoVien
+              }
+            })}
+            search
+            labelField="label"
+            valueField="value"
+            style={styles.dropdowns}
+            value={IdUserGiaoVien}
+            onChange={item => {
+              ChonGiaoVien(item)
+            }}
           />
         </View>
       </View>
       <View style={styles.content}>
         <FlatList
-          // data={data?.listMonHoc}
-          data={lstMonHoc}
+          data={searchGiaoVien}
           renderItem={({ item }) => (
             <TouchableOpacity>
               <ItemMonHoc item={item} />
@@ -168,5 +177,19 @@ const styles = StyleSheet.create({
   },
   marginBottom_16: {
     marginBottom: 16,
+  },
+  dropdowns: {
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
 });

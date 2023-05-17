@@ -2,69 +2,40 @@ import * as React from 'react';
 import { StyleSheet, Text, View, Pressable, } from "react-native";
 import { TextInput } from "@react-native-material/core";
 import { useState, useEffect } from "react";
-import { Button } from 'react-native-paper';
 
-export default function LienHe() {
-  const [syll, setSyll] = useState({
-    TenGhep: '',
-    GioiTinh: 0,
-    NgaySinh: null,
-    itemSYLL: {},
-  })
+export default function LienHe({ quyTrinh }) {
   const setForm = (value, prop, propObj) => {
-    if (value !== undefined) {
-      if (propObj) {
-        setSyll({
-          ...syll,
-          [propObj]: {
-            ...syll[propObj],
-            [prop]: value,
-          }
-        })
-        return;
+    let data = {
+      ...quyTrinh,
+      itemSYLL: {
+        ...quyTrinh?.itemSYLL,
+        [prop]:value
       }
-      setSyll({
-        ...syll,
-        [prop]: value,
-      })
     }
+    quyTrinh.setQuyTrinh(data)
   }
-
-  const GhiLai = async () => {
-    // let res = await QuyTrinhServices.ThongTinCaNhan.SetSoYeuLyLichSinhVien(syll)
-    // if (res) {
-    //     ToastMessage(res)
-    // }
-  }
-
   return (
     <View>
       <View style={styles.items}>
         <TextInput
           onChangeText={(e) => setForm(e, 'DienThoai', 'itemSYLL')}
-          value={syll.itemSYLL?.DienThoai}
-          label={'Số diện thoại'}
+          value={quyTrinh?.itemSYLL?.DienThoai}
+          label={'Số diện thoại (*)'}
           variant="standard" />
       </View>
       <View style={styles.items}>
         <TextInput
           onChangeText={(e) => setForm(e, 'Email', 'itemSYLL')}
-          value={syll.itemSYLL?.Email}
-          label={'Email'}
+          value={quyTrinh?.itemSYLL?.Email}
+          label={'Email (*)'}
           variant="standard" />
       </View>
       <View style={styles.items}>
         <TextInput
           onChangeText={(e) => setForm(e, 'ChoOHienNayDiaChi', 'itemSYLL')}
-          value={syll.itemSYLL?.ChoOHienNayDiaChi}
-          label={'Nơi ở hiện nay'}
+          value={quyTrinh?.itemSYLL?.ChoOHienNayDiaChi}
+          label={'Nơi ở hiện nay (*)'}
           variant="standard" />
-      </View>
-      <View style={styles.btn}>
-        <Button icon="check" mode="contained"
-          style={{ width: '75%' }}>
-          Xác nhận
-        </Button>
       </View>
     </View>
   );

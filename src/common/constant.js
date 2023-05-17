@@ -35,9 +35,16 @@ export const Screens = {
     Schedula: 'TKB',
     TestSchedule: 'Lịch thi',
     Attendance: 'Điểm danh',
-    Academic: 'KQHT',
+    Academic: 'Giờ giảng',
     More: 'Thêm',
-    TrainingPlan: 'Kế hoạch đào tạo'
+    TrainingPlan: 'Kế hoạch đào tạo',
+    DiemDanhSinhVien: 'Điểm danh sinh viên',
+    GhiChu: 'Lý do',
+    BangGhiDiem: 'Bảng ghi điểm',
+    SoGiaoAn: 'Sổ giáo án',
+    ChiTietBaiGiang: 'Chi tiết bài giảng',
+    KhaiBaoThucGiang: 'Khai báo thực giảng',
+    DanhSachSoGiaoAn: 'Sổ giáo án danh sách',
 };
 
 export const TextButton = {

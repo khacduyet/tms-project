@@ -177,6 +177,17 @@ export const QuyTrinhServices = {
             let _header = await getHeaders();
             return get(smarteos + `CoCauNhanSu/GetDanhSachBoPhanTheoLoai?MaLoaiBoPhan=KHOA`, _header)
         },
+    },
+
+    GiaoVien: {
+        GetLopAndSinhVienByGiaoVien: async () => {
+            let _header = await getHeaders();
+            return get(kbgg + `/PhanCongGiaoVien/GetLopAndSinhVienByGiaoVien`, _header)
+        },
+        GetDanhSachUserForHopDong: async () => {
+            let _header = await getHeaders();
+            return get('SmartEOSAPI/QuanTri/GetDanhSachUserForHopDong', _header);
+        }
     }
 
 }

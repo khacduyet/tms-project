@@ -134,6 +134,7 @@ export function TabNavigatior() {
           name={Screens.Chat}
           component={ChatPage}
           options={{
+            headerShown: false,
             tabBarIcon: ({ focused }) => {
               return (
                 <>

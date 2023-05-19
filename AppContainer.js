@@ -6,7 +6,7 @@ import Notification from './src/utils/notifications';
 import HomeMore from './src/screens/more/index';
 import { Screens } from './src/common/constant';
 import Setting from './src/screens/more/setting';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loading from './src/screens/loading';
 import ChangePassword from './src/screens/more/settings/changepass';
 import ForgotPassword from './src/screens/auth/forgot';
@@ -24,12 +24,19 @@ import SoGiaoAn from './src/screens/schedules/popuup/so_giao_an';
 import ChiTietBaiGiang from './src/screens/schedules/popuup/chi_tiet_bai_giang';
 import KhaiBaoThucGiang from './src/screens/schedules/popuup/khai_bao_thuc_giang';
 import DanhSachSoGiaoAn from './src/screens/schedules/popuup/danh_sach_so_giao_an';
+import { ChatCustomPage, ChatGroupPage, ChatPersonalPage } from './src/screens/chat';
+import { useEffect } from 'react';
+import { setBaseUrl } from './src/redux/actions/baseurlAction';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppContainer() {
+  const dispatch = useDispatch();
   Notification()
   const loading = useSelector((state) => state.loading);
+  useEffect(() => {
+    // dispatch(setBaseUrl());
+  }, [])
   return (
     <NavigationContainer>
       <StackNavigator />
@@ -59,6 +66,9 @@ function StackNavigator() {
     <Stack.Screen name={Screens.ChiTietBaiGiang} component={ChiTietBaiGiang} />
     <Stack.Screen name={Screens.KhaiBaoThucGiang} component={KhaiBaoThucGiang} />
     <Stack.Screen name={Screens.DanhSachSoGiaoAn} component={DanhSachSoGiaoAn} />
+    <Stack.Screen name={Screens.TuyChon} component={ChatCustomPage} />
+    <Stack.Screen name={Screens.ChatPersonalPage} component={ChatPersonalPage} />
+    <Stack.Screen name={Screens.TaoNhom} component={ChatGroupPage} />
   </Stack.Navigator>
 }
 

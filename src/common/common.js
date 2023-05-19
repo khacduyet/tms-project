@@ -102,6 +102,9 @@ export function formatDateStringGMT(datestring, type) {
         case "mm/yyyy":
             _return = datestring ? (mm + "/" + yyyy) : ''
             break;
+        case "hh:mm":
+            _return = datestring ? (hour + ":" + (minute < 10 ? `0` + minute : minute)) : ''
+            break;
         case "dd/mm/yyyy hh:mm":
             _return = datestring ? (dd + "/" + mm + "/" + yyyy + " " + hour + ":" + minute) : ''
             break;
@@ -128,4 +131,42 @@ export function DateToFirstLastDateInMonth(date) {
         Last: lastDay,
         LastUnix: DateToUnix(lastDay)
     }
+}
+
+
+export function getFirstCharacterByName(name, isFullLastName) {
+    let character = name;
+    if (name && name.length) {
+        let arr = name.split(" ");
+        let lastName = arr[arr.length - 1];
+        if (isFullLastName) {
+            return lastName
+        }
+        character = lastName[0];
+    }
+    return character
+}
+
+export const TYPEDATE = {
+    1: `Hôm nay`,
+    2: `Hôm qua`,
+}
+
+export function getTypeToDate(datestring) {
+    const dateNow = new Date();
+    const YEAR = dateNow.getFullYear();
+    const MONTH = dateNow.getMonth();
+    const DATE = dateNow.getDate();
+
+    const date = (new Date(new Date(datestring).getTime()));
+    const _year = date.getFullYear();
+    const _month = date.getMonth();
+    const _date = date.getDate();
+
+    if (YEAR === _year && MONTH === _month && DATE === _date) {
+        return TYPEDATE[1]
+    } else if (YEAR === _year && MONTH === _month && DATE - 1 === _date) {
+        return TYPEDATE[2]
+    }
+    return formatDateStringGMT(date, 'dd/mm/yyyy')
 }

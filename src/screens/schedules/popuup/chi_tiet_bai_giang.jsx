@@ -266,7 +266,8 @@ const BaiHocT = ({ ThucHien }) => {
                                                             /> */}
                                                             <RenderHTML
                                                                 source={{
-                                                                    html: `${obj_Popup?.HoatDongGV}
+                                                                    html: `${obj_Popup?.HoatDongGV
+                                                                    }
                                                                 `}}
                                                             />
                                                         </View>

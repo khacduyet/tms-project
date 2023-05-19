@@ -11,6 +11,7 @@ import { QuyTrinhServices } from "../../../services/danhmuc.service";
 import { ScrollView } from "react-native";
 import Checkbox from 'expo-checkbox';
 import { ToastMessage } from "../../../common/components";
+import { Dimensions } from 'react-native'
 
 export default function SoGiaoAn({ route }) {
     const { item } = route.params;
@@ -61,7 +62,7 @@ export default function SoGiaoAn({ route }) {
                     <View style={styles.items}>
                         <TextInput
                             label={'Môn'}
-                            value={obj_data.TenMonHoc}
+                            value={item.TenMonHoc}
                             editable={false}
                             variant="standard" />
                     </View>
@@ -69,7 +70,7 @@ export default function SoGiaoAn({ route }) {
                         <View style={[styles.items, styles.flex]}>
                             <TextInput
                                 label={'Loại sổ'}
-                                value={obj_data.TenLoaiSo}
+                                value={item.TenLoaiSo}
                                 editable={false}
                                 variant="standard" />
                         </View>
@@ -85,7 +86,8 @@ export default function SoGiaoAn({ route }) {
                         <View style={[styles.items, styles.flex]}>
                             <TextInput
                                 label={'Số sổ'}
-                                value={obj_data.SoSo}
+                                keyboardType='numeric'
+                                value={obj_data.SoSo?.toString()}
                                 editable={false}
                                 variant="standard" />
                         </View>
@@ -101,14 +103,16 @@ export default function SoGiaoAn({ route }) {
                         <View style={[styles.items, styles.flex]}>
                             <TextInput
                                 label={'Số chương'}
-                                value={obj_data.SoChuong}
+                                keyboardType='numeric'
+                                value={obj_data.SoChuong?.toString()}
                                 editable={false}
                                 variant="standard" />
                         </View>
                         <View style={[styles.items, styles.flex]}>
                             <TextInput
                                 label={'Số bài'}
-                                value={obj_data.SoBai}
+                                keyboardType='numeric'
+                                value={obj_data.SoBai?.toString()}
                                 editable={false}
                                 variant="standard" />
                         </View>
@@ -129,12 +133,15 @@ export default function SoGiaoAn({ route }) {
                             <View style={{ width: '15%' }}><Text style={styles.table_caption}>Đã dạy </Text></View>
                             <View style={{ width: '15%' }}><Text style={styles.table_caption}>Thao thác</Text></View>
                         </View>
-                        <ScrollView style={{ height: 260 }}>
+                        <ScrollView style={{ height: Dimensions.get('window').width/2 }}>
                             {
                                 obj_data.DSBaiGiangs?.map((x, idx) => {
+
+
+                                    
                                     return (
                                         <View style={styles.table_body}>
-                                            <View style={[styles.linedata, styles.w_55]}><Text style={[styles.table_data, styles.ptop]}>{x.TenBai}</Text></View>
+                                            <View style={[styles.linedataLeft, styles.w_55]}><Text style={[styles.table_data, styles.ptop]}>{x.TenBai}</Text></View>
                                             <View style={[styles.linedata, styles.w_15]}><Text style={[styles.table_data, styles.ptop]}>Bài {x.SoBai}</Text></View>
                                             <View style={[styles.linedata, styles.w_15]}>
                                                 <View>
@@ -173,6 +180,9 @@ export default function SoGiaoAn({ route }) {
 }
 
 const styles = {
+    body: {
+       
+    },
     btn: {
         paddingTop: 30,
         flexDirection: "row",
@@ -218,6 +228,14 @@ const styles = {
     linedata: {
         flexDirection: "row",
         justifyContent: 'center',
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: 'blue',
+        padding: 10
+    },
+    linedataLeft: {
+        flexDirection: "row",
         borderLeftWidth: 1,
         borderRightWidth: 1,
         borderBottomWidth: 1,

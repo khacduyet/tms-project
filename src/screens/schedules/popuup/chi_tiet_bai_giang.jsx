@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Text, StyleSheet, useColorScheme, View, TextInput as MyTextInput } from 'react-native';
+import React, { useRef, useState } from "react";
+import { Text, View, TextInput as MyTextInput } from 'react-native';
 import HeaderBack from "../../../common/header";
 import { Screens } from "../../../common/constant";
 import { SafeAreaView } from "react-native";
@@ -14,98 +14,129 @@ import { Dialog, Portal } from 'react-native-paper';
 import { formatDateStringGMT } from "../../../common/common";
 import { useEffect } from "react";
 import { QuyTrinhServices } from "../../../services/danhmuc.service";
+import { Dimensions } from "react-native";
+import RenderHTML from "react-native-render-html";
 
-
-const data = [
-    { Ma: 'MQ_001', DonVi: 'CTTN Hài Hòa' },
-    { Ma: 'MQ_002', DonVi: 'CTTN Hài Hòa' },
-];
-const listLoaiDiem = [
-    { label: 'MQ_001', value: '00112' },
-    { label: 'MQ_002', value: '9922' },
-];
 
 export default function ChiTietBaiGiang({ route }) {
     const { item } = route.params;
+    const [isPopUp, setisPopUp] = React.useState(false)
+    const [obj_Popup, setobj_Popup] = React.useState({})
+    const showPopUp = (value, title, prop) => {
+        let data = {
+            title: title,
+            [prop]: value
+        }
+        setisPopUp(true)
+        setobj_Popup(data)
+    };
+    const hidePopUp = () => setisPopUp(false);
     return (
         <SafeAreaView>
             <HeaderBack header={Screens.ChiTietBaiGiang} />
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={[styles.items, styles.flex]}>
+            <ScrollView style={{ height: Dimensions.get('window').height }}>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Tên chương'}
+                                    keyboardType='numeric'
+                                    value={item?.TenChuong?.toString()}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Số TT bài'}
+                                    value={item.SoBai}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                        </View>
+                        <View style={styles.items}>
                             <TextInput
-                                label={'Tên chương'}
-                                value={item?.TenChuong}
+                                label={'Tên bài'}
+                                value={item.TenBai}
                                 editable={false}
                                 variant="standard" />
                         </View>
-                        <View style={[styles.items, styles.flex]}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Tổng số giờ thực hiện'}
+                                    keyboardType='numeric'
+                                    value={item.TongSoGio?.toString()}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Ghi chú'}
+                                    value={item.GhiChu}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Từ ngày'}
+                                    value={formatDateStringGMT(item.NgayBatDau, "dd/mm/yyyy")}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                            <View style={[styles.items, styles.flex]}>
+                                <TextInput
+                                    label={'Đến ngày'}
+                                    value={formatDateStringGMT(item.NgayKetThuc, "dd/mm/yyyy")}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                        </View>
+                        <TouchableOpacity onPress={() => {
+                            showPopUp(item?.NoiDungTomTat, 'Nội dung', 'NoiDungTomTat')
+                        }}>
+                            <View style={styles.items}>
+                                <TextInput
+                                    label={'Nội dung'}
+                                    value={item?.NoiDungTomTat}
+                                    editable={false}
+                                    variant="standard" />
+                            </View>
+                        </TouchableOpacity>
+                        <View style={styles.items}>
                             <TextInput
-                                label={'Số TT bài'}
-                                value={item.TenMonHoc}
+                                label={'Mục tiêu giảng dạy'}
+                                value={item?.MucTieu}
                                 editable={false}
                                 variant="standard" />
                         </View>
                     </View>
-                    <View style={styles.items}>
-                        <TextInput
-                            label={'Tên bài'}
-                            value={item.TenBai}
-                            editable={false}
-                            variant="standard" />
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={[styles.items, styles.flex]}>
-                            <TextInput
-                                label={'Tổng số giờ thực hiện'}
-                                value={item.TongSoGio}
-                                editable={false}
-                                variant="standard" />
-                        </View>
-                        <View style={[styles.items, styles.flex]}>
-                            <TextInput
-                                label={'Ghi chú'}
-                                value={item.TenMonHoc}
-                                editable={false}
-                                variant="standard" />
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={[styles.items, styles.flex]}>
-                            <TextInput
-                                label={'Từ ngày'}
-                                value={formatDateStringGMT(item.NgayBatDau, "dd/mm/yyyy")}
-                                editable={false}
-                                variant="standard" />
-                        </View>
-                        <View style={[styles.items, styles.flex]}>
-                            <TextInput
-                                label={'Đến ngày'}
-                                value={formatDateStringGMT(item.NgayKetThuc, "dd/mm/yyyy")}
-                                editable={false}
-                                variant="standard" />
-                        </View>
-                    </View>
-                    <View style={styles.items}>
-                        <TextInput
-                            label={'Nội dung'}
-                            value={item?.NoiDungTomTat}
-                            editable={false}
-                            variant="standard" />
-                    </View>
-                    <View style={styles.items}>
-                        <TextInput
-                            label={'Môn'}
-                            value={item?.TenMonHoc}
-                            editable={false}
-                            variant="standard" />
+                    <View>
+                        <TabIndex item={item} />
                     </View>
                 </View>
-                <View>
-                    <TabIndex item={item} />
-                </View>
-            </View>
+                <Portal>
+                    <Dialog visible={isPopUp} onDismiss={hidePopUp}>
+                        <Dialog.Title>
+                            {obj_Popup.title}
+                        </Dialog.Title>
+                        <Dialog.ScrollArea>
+                            <ScrollView contentContainerStyle={{ paddingHorizontal: 0 }}>
+                                <View style={styles.items}>
+                                    <Text>
+                                        {obj_Popup.NoiDungTomTat}
+                                    </Text>
+                                </View>
+                            </ScrollView>
+                        </Dialog.ScrollArea>
+                        <Dialog.Actions>
+                            <Button onPress={hidePopUp}>Đóng</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -174,8 +205,18 @@ const DayHocT = ({ dodung }) => {
 
 const BaiHocT = ({ ThucHien }) => {
     const [visible, setVisible] = React.useState(false)
-    const showDialog = () => setVisible(true);
+    const [obj_Popup, setobj_Popup] = React.useState({})
+    const showDialog = (x) => {
+        setVisible(true)
+        setobj_Popup(x)
+    };
     const hideDialog = () => setVisible(false);
+    const source = {
+        html: `
+      <p style='text-align:center;'>
+        Hello World!
+      </p>`
+    };
     return (
         <View style={styles.body}>
             <View>
@@ -193,12 +234,12 @@ const BaiHocT = ({ ThucHien }) => {
                                     <View style={[styles.linedata, styles.w_25]}><Text style={[styles.table_data, styles.ptop]}>{x.ThoiGian} phút</Text></View>
                                     <View style={[styles.linedata, styles.w_15]}>
                                         <View>
-                                            <Entypo name="edit" size={24} color="blue" onPress={showDialog} />
+                                            <Entypo name="edit" size={24} color="blue" onPress={() => { showDialog(x) }} />
                                         </View>
                                     </View>
                                     <Portal>
                                         <Dialog visible={visible} onDismiss={hideDialog}>
-                                            <Dialog.Title>Giới thiệu bài học</Dialog.Title>
+                                            <Dialog.Title>{obj_Popup.NoiDung}</Dialog.Title>
                                             <Dialog.ScrollArea>
                                                 <ScrollView contentContainerStyle={{ paddingHorizontal: 4 }}>
                                                     <View style={[styles.items,]}>
@@ -215,13 +256,18 @@ const BaiHocT = ({ ThucHien }) => {
                                                     <View style={[styles.items,]}>
                                                         <Text style={{ fontWeight: 'bold', paddingBottom: 8 }}>Giáo viên</Text>
                                                         <View style={styles.textAreaContainer} >
-                                                            <MyTextInput
+                                                            {/* <MyTextInput
                                                                 style={styles.textArea}
                                                                 underlineColorAndroid="transparent"
                                                                 placeholder="Type something"
-                                                                value={x?.HoatDongGV}
+                                                                value={obj_Popup?.HoatDongGV}
                                                                 numberOfLines={8}
                                                                 multiline={true}
+                                                            /> */}
+                                                            <RenderHTML
+                                                                source={{
+                                                                    html: `${obj_Popup?.HoatDongGV}
+                                                                `}}
                                                             />
                                                         </View>
                                                     </View>
@@ -231,7 +277,7 @@ const BaiHocT = ({ ThucHien }) => {
                                                             <MyTextInput
                                                                 style={styles.textArea}
                                                                 underlineColorAndroid="transparent"
-                                                                value={x?.HoatDongSV}
+                                                                value={obj_Popup?.HoatDongSV}
                                                                 placeholder="Type something"
                                                                 numberOfLines={8}
                                                                 multiline={true}
@@ -241,7 +287,7 @@ const BaiHocT = ({ ThucHien }) => {
                                                 </ScrollView>
                                             </Dialog.ScrollArea>
                                             <Dialog.Actions>
-                                                <Button onPress={hideDialog}>Done</Button>
+                                                <Button onPress={hideDialog}>Đóng</Button>
                                             </Dialog.Actions>
                                         </Dialog>
                                     </Portal>
@@ -310,8 +356,12 @@ const GiangDayT = ({ FileDinhKem }) => {
 
 const Table = ({ dodung }) => {
     const [visible, setVisible] = React.useState(false)
-    const showDialog = () => setVisible(true);
+    const showDialog = (x) => {
+        setVisible(true)
+        setobj_Popup(x)
+    };
     const hideDialog = () => setVisible(false);
+    const [obj_Popup, setobj_Popup] = React.useState({})
     return (
         <View style={styles.body}>
             <View>
@@ -337,34 +387,34 @@ const Table = ({ dodung }) => {
                                     </View>
                                     <View style={[styles.linedata, styles.w_15]}>
                                         <View>
-                                            <Entypo name="edit" size={24} color="blue" onPress={showDialog} />
+                                            <Entypo name="edit" size={24} color="blue" onPress={() => { showDialog(x) }} />
                                         </View>
                                     </View>
                                     <Portal>
                                         <Dialog visible={visible} onDismiss={hideDialog}>
                                             <Dialog.Title>
-                                                {x.Ma} - {x?.TenDoDung}
+                                                {obj_Popup.Ma} - {obj_Popup?.TenDoDung}
                                             </Dialog.Title>
                                             <Dialog.ScrollArea>
-                                                <ScrollView contentContainerStyle={{ paddingHorizontal: 24 }}>
+                                                <ScrollView contentContainerStyle={{ paddingHorizontal: 0 }}>
                                                     <View style={styles.items}>
                                                         <TextInput
                                                             label={'Mục đích sử dụng'}
-                                                            value={x?.MucDich}
+                                                            value={obj_Popup?.MucDich}
                                                             editable={false}
                                                             variant="standard" />
                                                     </View>
                                                     <View style={styles.items}>
                                                         <TextInput
                                                             label={'Ghi chú'}
-                                                            value={x?.GhiChu}
+                                                            value={obj_Popup?.GhiChu}
                                                             editable={false}
                                                             variant="standard" />
                                                     </View>
                                                 </ScrollView>
                                             </Dialog.ScrollArea>
                                             <Dialog.Actions>
-                                                <Button onPress={hideDialog}>Done</Button>
+                                                <Button onPress={hideDialog}>Đóng</Button>
                                             </Dialog.Actions>
                                         </Dialog>
                                     </Portal>

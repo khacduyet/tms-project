@@ -66,19 +66,15 @@ const ListGiaoAn = ({ item }) => {
             <View style={giaoan.item_title}>
                 <View style={giaoan.flex}>
                     <Entypo name="open-book" size={24} color="black" />
-                    <Text style={giaoan.item_title_header}>Môn học</Text>
+                    <Text style={giaoan.item_title_header}>Môn học: {item.TenMonHoc}</Text>
                 </View>
             </View>
             <View style={giaoan.item_content}>
                 <View>
-
                     <View style={giaoan.caption}><Text>Tên sổ: {item.TenSo}</Text></View>
-                    <View style={giaoan.caption}><Text>Môn học: {item.TenMonHoc}</Text></View>
                     <View style={giaoan.caption}><Text>Lớp: {item.TenLop}</Text></View>
                     <View style={giaoan.caption}><Text>Trình độ: {item.TenCapGiangDay}</Text></View>
                     <View style={giaoan.caption}><Text>Hình thức: {item.TenHinhThucDaoTao}</Text></View>
-                </View>
-                <View>
                     <View style={giaoan.caption}><Text>Loại sổ: {item.TenLoaiSo}</Text></View>
                     <View style={giaoan.caption}><Text>số sổ: {item.SoSo}</Text></View>
                     <View style={giaoan.caption}><Text>Số chương: {item.SoChuong}</Text></View>
@@ -111,8 +107,8 @@ const giaoan = {
     item_content: {
         backgroundColor: '#fff',
         padding: 8,
-        flexDirection: "row",
-        justifyContent: 'space-between'
+        // flexDirection: "row",
+        // justifyContent: 'space-between'
     },
     caption: {
         padding: 8,

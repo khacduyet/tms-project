@@ -23,7 +23,7 @@ export default function BangGhiDiem({ route }) {
     // API ------ 
     const getAllOptions = async () => {
         let $loaidiem = QuyTrinhServices.SinhVien.GetListdmLoaiDiem({});
-        let res = await  Promise.all([$loaidiem])
+        let res = await Promise.all([$loaidiem])
         setListLoaiDiem(res[0])
     }
 
@@ -127,12 +127,16 @@ export default function BangGhiDiem({ route }) {
                                             <View style={{ width: '45%', }}><Text style={[styles.table_data, styles.ptop]}>{x.TenGhep}</Text></View>
                                             <View style={{ width: '25%', }}>
                                                 <View>
-                                                    <MyTextInput
+                                                    {/* <MyTextInput
                                                         style={styles.input_text}
                                                         keyboardType='number-pad'
                                                         value={x.itemBangDiemHangNgay.Diem?.toString()}
                                                         onChangeText={(e) => setForm(e, idx, 'Diem')}
-                                                    />
+                                                    /> */}
+                                                    <TextInput
+                                                        keyboardType='numeric'
+                                                        value={x.itemBangDiemHangNgay.Diem?.toString()}
+                                                        onChangeText={(e) => setForm(e, idx, 'Diem')} />
                                                 </View>
                                             </View>
                                             <View style={{
@@ -147,6 +151,7 @@ export default function BangGhiDiem({ route }) {
                                                     })}
                                                     labelField={'label'}
                                                     valueField={'value'}
+                                                    placeholder="Chọn"
                                                     style={[styles.dropdown, styles.flex]}
                                                     searchPlaceholder="Search..."
                                                     value={x.itemBangDiemHangNgay.IdLoaiDiem}

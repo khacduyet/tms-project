@@ -20,7 +20,7 @@ export default function LienHe({ quyTrinh }) {
         <TextInput
           onChangeText={(e) => setForm(e, 'DienThoai', 'itemSYLL')}
           value={quyTrinh?.itemSYLL?.DienThoai}
-          label={'Số diện thoại (*)'}
+          label={'Số điện thoại (*)'}
           variant="standard" />
       </View>
       <View style={styles.items}>

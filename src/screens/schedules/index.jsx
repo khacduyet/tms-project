@@ -15,6 +15,7 @@ import { AuthServices, QuyTrinhServices } from "../../services/danhmuc.service";
 import { ActivityIndicator } from "react-native";
 import { width } from "../../common/constant";
 import { useNavigation } from "@react-navigation/native";
+import Checkbox from "expo-checkbox";
 
 const TextButtonTab = {
   LichHoc: "Lịch dạy",
@@ -29,7 +30,7 @@ export default function SchedulePage() {
   return (
     <SafeAreaView>
       <View style={[styles.container]}>
-        <View style={[styles.tab]}>
+        {/* <View style={[styles.tab]}>
           <TouchableOpacity
             style={[styles.buttonTab, tabIndex === 0 && styles.buttonTabActive]}
             onPress={() => {
@@ -64,7 +65,11 @@ export default function SchedulePage() {
         <View style={[bodys.container]}>
           {tabIndex === 0 && <TabLichHoc />}
           {tabIndex === 1 && <TabLichThi />}
+        </View> */}
+        <View style={{paddingTop:20, paddingBottom:20}}>
+          <Text style={{textAlign:'center',fontWeight:'bold'}}>Lịch giảng dạy</Text>
         </View>
+        <TabLichHoc />
       </View>
     </SafeAreaView>
   );
@@ -290,7 +295,6 @@ const data = () => {
 const WeekSchedule = ({ item }) => {
   return (
     <>
-
       {item?.map((x, index) => {
         // return <ItemSchedule item={x} key={`${index}-${item?.Tuan}`} />;
         return <ItemSchedule item={x} />;
@@ -382,7 +386,7 @@ export const ItemChildSchedule = ({ data, item, maLop, style }) => {
         </View>
         <View style={[style.bodyItem]}>
           <Image
-            source={require("../../resources/icons/teacher-board.png")}
+            source={require("../../resources/icons/thoi-gian.png")}
             style={{ width: SIZE_ICON, height: SIZE_ICON, ...styles.iconImage }}
             resizeMode="stretch"
           />
@@ -417,10 +421,10 @@ export const OPT = {
 function ItemChildScheduleFooter({ itemdiemdanh, item }) {
   const nav = useNavigation();
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',padding:5 }}>
       <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-          <Entypo name="open-book" size={18} color="blue" onPress={() => {
+          <Entypo name="user" size={18} color="blue" onPress={() => {
             nav.navigate(Screens.DiemDanhSinhVien, { itemdiemdanh: itemdiemdanh, item: item })
           }} />
         </View>
@@ -428,31 +432,31 @@ function ItemChildScheduleFooter({ itemdiemdanh, item }) {
       </View>
       <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-          <Entypo name="open-book" size={18} color="#CC66FF" onPress={() => {
+          <Entypo name="text-document" size={18} color="#CC66FF" onPress={() => {
             nav.navigate(Screens.BangGhiDiem, { itemdiemdanh: itemdiemdanh, item: item })
           }} />
         </View>
-        <Text style={{ color: '#CC66FF', fontSize: 10 }}>Bảng điểm</Text>
+        <Text style={{ color: '#CC66FF', fontSize: 10 }}>Báo điểm</Text>
       </View>
       <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-          <Entypo name="open-book" size={18} color="#99CCFF" onPress={() => {
+          <Entypo name="drive" size={18} color="#99CCFF" onPress={() => {
             nav.navigate(Screens.DanhSachSoGiaoAn, { itemdiemdanh: itemdiemdanh, item: item })
           }} />
         </View>
         <Text style={{ color: '#99CCFF', fontSize: 10 }}>Sổ giáo án</Text>
       </View>
-      <View style={{ textAlign: 'center', paddingRight: 5 }}>
+      {/* <View style={{ textAlign: 'center', paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
           <Entypo name="open-book" size={18} color="#54FF9F" onPress={() => {
-            // if (itemdiemdanh.isKetThucKGBB) {
-            //   return;
-            // }
+            if (itemdiemdanh.isKetThucKGBB) {
+              return;
+            }
             nav.navigate(Screens.KhaiBaoThucGiang, { itemdiemdanh: itemdiemdanh, item: item, opt: itemdiemdanh.isDaKhaiBao ? OPT.UPDATE : OPT.ADD })
           }} />
         </View>
         <Text style={{ color: '#54FF9F', fontSize: 10 }}>Thực giảng</Text>
-      </View>
+      </View> */}
     </View>
   )
 }
@@ -462,6 +466,8 @@ function TabLichHoc() {
   const [timeActive, setTimeActive] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCheckEven, setisCheckEven] = useState(false);
+  const [schedulesCopy, setschedulesCopy] = useState([]);
 
   const getAllOptions = async () => {
     if (timeActive) {
@@ -469,13 +475,14 @@ function TabLichHoc() {
       let _thisTime = time[timeActive];
       let data = {
         Nam: _thisTime.value.getFullYear(),
-        Thang: _thisTime.value.getMonth(),
+        Thang: _thisTime.value.getMonth() + 1,
         IdGiaoVien: currentUser.Id
       };
       let tkb = await QuyTrinhServices.LapThoiKhoaBieu.GetTKBThang(data);
       if (tkb) {
         // console.log("tkb", tkb);
         setSchedules(tkb ?? []);
+        setschedulesCopy(tkb ?? []);
         setLoading(false);
       }
     }
@@ -503,6 +510,20 @@ function TabLichHoc() {
     setTimeActive(_atc);
   };
   const nav = useNavigation();
+  const CheckEven = (value) => {
+    setisCheckEven(value)
+    if (value === true) {
+      let arr = schedulesCopy.map(ele => {
+        return {
+          ...ele,
+          ListCaHoc: ele.ListCaHoc.filter(x => x.TenCaHoc === 'Tối')
+        }
+      })
+      setSchedules(arr)
+    } else {
+      setSchedules(schedulesCopy)
+    }
+  };
 
   return (
     <View style={[bodys.wrap]}>
@@ -562,6 +583,16 @@ function TabLichHoc() {
         </View>
       </View>
       <View style={[bodys.wrapContent]}>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 8, marginRight: 20 }}>
+          <Checkbox
+            value={isCheckEven}
+            onValueChange={(e) => {
+              CheckEven(e)
+            }}
+            color={isCheckEven ? '#4630EB' : undefined}
+          />
+          <Text style={{ paddingLeft: 8 }}>Hiển thị buổi tối</Text>
+        </View>
         {loading && (
           <View
             style={{
@@ -589,6 +620,7 @@ function TabLichHoc() {
     </View>
   );
 }
+
 // #endregion Lịch học
 
 const styles = {
@@ -619,7 +651,7 @@ const styles = {
     fontWeight: 600,
   },
   iconImage: {
-    marginLeft: 3,
+
   },
 };
 

@@ -40,7 +40,7 @@ export default function LichHocHomNayComponent() {
       >
         <View style={[styles.header]}>
           <Text style={[styles.headerTitle, styles.textColor]}>
-            Lịch học hôm nay ({formatDateStringGMT(new Date(), "dd/mm/yyyy")})
+            Lịch dạy hôm nay ({formatDateStringGMT(new Date(), "dd/mm/yyyy")})
           </Text>
           <TouchableOpacity
             style={[styles.headerButton]}

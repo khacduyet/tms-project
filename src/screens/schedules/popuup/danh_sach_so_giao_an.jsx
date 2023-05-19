@@ -19,15 +19,15 @@ export default function DanhSachSoGiaoAn({ route }) {
         let currentUser = await AuthServices.currentUser();
         let data = {
             IddmCaHoc: itemdiemdanh.IddmCaHoc,
-            listIddmLopHoc: itemdiemdanh.listIddmLopHoc,
+            IddmLopHoc: itemdiemdanh.listIddmLopHoc[0],
             IddmLopHoc_Nhom: itemdiemdanh.IddmLopHoc_Nhom,
             IddmMonHoc: itemdiemdanh.IddmMonHoc,
-            IdDSMonHoc: itemdiemdanh.IdDSMonHoc,
-            IdUserGiaoVien: currentUser.Id,
+            IdDanhSachMonHoc: itemdiemdanh.IdDSMonHoc,
+            IdGiaoVien: currentUser.Id,
         }
         let res = await QuyTrinhServices.LapThoiKhoaBieu.GetListSoGiaoAn(data);
         if (res) {
-            console.log('res', res);
+            // console.log('res', res);
             setArr(res)
         }
     };

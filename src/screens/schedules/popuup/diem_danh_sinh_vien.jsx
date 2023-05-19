@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, useColorScheme, View, ScrollView } from 'react-native';
+import { Text, StyleSheet, useColorScheme, View, ScrollView, Dimensions } from 'react-native';
 import HeaderBack from "../../../common/header";
 import { Screens } from "../../../common/constant";
 import { SafeAreaView } from "react-native";
@@ -59,9 +59,9 @@ export default function DiemDanhSinhVien({ route }) {
     const SiSo = useMemo(() => {
         let svNghi = (obj_data.listDanhSachSinhVien?.filter(ele => ele.itemDiemDanhHangNgay.isVangMat)?.length);
         let svTong = (obj_data.listDanhSachSinhVien?.length);
-        return `${svNghi}/${svTong}`;
-    }, [obj_data.listDanhSachSinhVien])
-    const nav = useNavigation();
+        return `${svTong - svNghi}/${svTong}`;
+    }, [obj_data])
+
     const setForm = (e, idx, prop) => {
         let temp = obj_data.listDanhSachSinhVien
         let _this = temp[idx]
@@ -134,12 +134,15 @@ export default function DiemDanhSinhVien({ route }) {
                             <View style={{ width: '25%' }}><Text style={styles.table_caption}>Số giờ nghỉ</Text></View>
                             <View style={{ width: '15%' }}><Text style={styles.table_caption}>Lý do</Text></View>
                         </View>
-                        <ScrollView style={{ height: 400 }}>
+                        <ScrollView style={{ height: Dimensions.get("window").height / 2.5 }}>
                             {
                                 obj_data.listDanhSachSinhVien?.map((x, idx) => {
                                     return (
                                         <View style={styles.table_body}>
-                                            <View style={{ width: '45%' }}><Text style={[styles.table_data, styles.ptop]}>{x.TenGhep}</Text></View>
+                                            <View style={{ width: '45%' }}>
+                                                <Text style={[styles.table_data, styles.ptop]}>{x.TenGhep}</Text>
+                                                <Text style={[styles.table_data, styles.ptop]}>{x?.MaSinhVien}</Text>
+                                            </View>
                                             <View style={{ width: '15%', flexDirection: "row", justifyContent: 'center' }}>
                                                 <View>
                                                     <Checkbox
@@ -153,14 +156,14 @@ export default function DiemDanhSinhVien({ route }) {
                                             <View style={{ width: '25%' }}>
                                                 <View>
                                                     <TextInput
-                                                        keyboardType='number-pad'
-                                                        value={x.itemDiemDanhHangNgay.SoGioNghi      }
+                                                        keyboardType='numeric'
+                                                        value={x.itemDiemDanhHangNgay.SoGioNghi}
                                                         onChangeText={(e) => setForm(e, idx, 'SoGioNghi')} />
 
                                                 </View>
                                             </View>
                                             <View style={{ width: '15%', flexDirection: "row", justifyContent: 'center' }}>
-                                                <Entypo name="open-book" size={24} color="black"
+                                                <Entypo name="open-book" size={24} color={x.itemDiemDanhHangNgay.LyDoNghi ? 'blue' : 'black'}
                                                     onPress={() => {
                                                         setObjGhiChu({
                                                             index: idx,
@@ -201,7 +204,7 @@ export default function DiemDanhSinhVien({ route }) {
                         </ScrollView>
                     </Dialog.ScrollArea>
                     <Dialog.Actions>
-                        <Button onPress={hideDialog}>Xác nhận </Button>
+                        <Button onPress={hideDialog} textColor='#3BAD21'>Xác nhận </Button>
                     </Dialog.Actions>
                 </Dialog>
             </Portal>

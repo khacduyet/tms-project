@@ -77,6 +77,7 @@ export default function BangDiem() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <View><Text style={{textAlign:'center',fontWeight:'bold', fontSize:20,paddingTop:10, paddingBottom:10}}>Thực giảng giáo viên</Text></View>
         <View style={styles.dropdown}>
           <DropDowns
             data={listBoPhan.map(x => {

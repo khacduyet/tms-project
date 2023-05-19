@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Picker } from '@react-native-picker/picker';
 
 
-export function ModalGeneral({ isVisible, onClose, onFinish, children }) {
+export function ModalGeneral({ isVisible, onClose, onFinish, children, isShowHeader }) {
     return <Modal
         style={styles.container}
         isVisible={isVisible}
@@ -17,14 +17,14 @@ export function ModalGeneral({ isVisible, onClose, onFinish, children }) {
         onBackButtonPress={onClose}
         useNativeDriver={true}>
         <View style={styles.content}>
-            <View style={styles.header}>
+            {isShowHeader && <View style={styles.header}>
                 <TouchableHighlight style={styles.headerBtn} onPress={onClose}>
                     <Text style={styles.headerBtnText}>{TextButton.Cancel}</Text>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.headerBtn} onPress={onFinish}>
                     <Text style={styles.headerBtnText}>{TextButton.Accept}</Text>
                 </TouchableHighlight>
-            </View>
+            </View>}
             {children}
         </View>
     </Modal>

@@ -45,6 +45,9 @@ export const Screens = {
     ChiTietBaiGiang: 'Chi tiết bài giảng',
     KhaiBaoThucGiang: 'Khai báo thực giảng',
     DanhSachSoGiaoAn: 'Danh sách sổ giáo án',
+    TuyChon: 'Tùy chọn',
+    TaoNhom: 'Tạo nhóm',
+    ChatPersonalPage: 'Trò chuyện Riêng',
 };
 
 export const TextButton = {

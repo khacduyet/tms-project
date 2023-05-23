@@ -482,13 +482,20 @@ export const ChatGroupPage = ({ props, route }) => {
       IdChuRoom: currentUser.Id,
       isGroup: true,
       listLop: [],
-      listUser: listChoose.map((x) => {
-        return {
-          IdUser: x.Id,
-          TenUser: x.Ten || x.TenNhanVien,
-          isSinhVien: x?.isSinhVien,
-        };
-      }),
+      listUser: [
+        {
+          IdUser: currentUser.Id,
+          TenUser: currentUser.TenNhanVien,
+          isSinhVien: false,
+        },
+        ...listChoose.map((x) => {
+          return {
+            IdUser: x.Id,
+            TenUser: x.Ten || x.TenNhanVien,
+            isSinhVien: x?.isSinhVien,
+          };
+        }),
+      ],
     };
     let res = await ChatService.ServiceChat.SetRoom(obj);
     if (res) {

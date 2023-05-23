@@ -3,6 +3,7 @@ import axiosClient from "./axiosChat.setup";
 
 const { get, post } = axiosClient;
 const path = "ChatServer/APIService/";
+const chatbot = "ChatServer/ChatBotService/";
 export const ChatService = {
   ServiceChat: ServiceChat()
 };
@@ -32,6 +33,10 @@ export function ServiceChat() {
     GetDSRoom: async (data) => {
       let _header = await getHeaders();
       return post(path + 'GetDSRoom', data, _header);
+    },
+    GetListChatBotQAModel: async () => {
+      let _header = await getHeaders();
+      return get(chatbot + 'GetListChatBotQAModel', _header);
     },
   }
 }

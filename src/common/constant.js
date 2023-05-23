@@ -48,6 +48,7 @@ export const Screens = {
     TuyChon: 'Tùy chọn',
     TaoNhom: 'Tạo nhóm',
     ChatPersonalPage: 'Trò chuyện Riêng',
+    ChatBot: 'Thư viện câu hỏi',
 };
 
 export const TextButton = {

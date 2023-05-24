@@ -30,6 +30,7 @@ import { Entypo } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import {
+  createGuid,
   formatDateStringGMT,
   getFirstCharacterByName,
   getTypeToDate,
@@ -187,6 +188,9 @@ export default function ChatPage() {
         <View style={[s.body]}>
           <FlatList
             data={listRoom}
+            maxToRenderPerBatch={30}
+            windowSize={21}
+            initialNumToRender={10}
             showsVerticalScrollIndicator={false}
             refreshing={refresh}
             onRefresh={onRefresh}
@@ -198,7 +202,7 @@ export default function ChatPage() {
                 }}
               />
             )}
-            keyExtractor={(item, index) => index}
+            keyExtractor={(item, index) => `ListPhongChat` + index}
             ListEmptyComponent={ListEmptyComponent}
             ListFooterComponent={<View></View>}
           />
@@ -305,6 +309,9 @@ const ModalAddChat = ({ props }) => {
         style={{ maxHeight: height / 2 }}
         data={activeIndex === 0 ? listSV : listGV}
         showsVerticalScrollIndicator={false}
+        maxToRenderPerBatch={30}
+        windowSize={21}
+        initialNumToRender={10}
         renderItem={(item) => (
           <ItemPersonal
             props={{
@@ -316,7 +323,7 @@ const ModalAddChat = ({ props }) => {
           />
         )}
         getItemLayout={getItemLayout}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => `ListGeneral` + item.item.Created}
         ListEmptyComponent={ListEmptyComponent}
         ListFooterComponent={<View></View>}
       />
@@ -412,50 +419,56 @@ export const ChatGroupPage = ({ props, route }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector((state) => state.currentUser);
 
-  const handleSetCheckbox = (value) => {
-    if (!listChoose.find((x) => x.Id === value.Id)) {
-      let a = [
-        ...listChoose,
-        {
-          ...value,
-          isSinhVien: activeIndex === 0,
-        },
-      ];
-      setListChoose(a);
-    } else {
-      let temp = listChoose;
-      let idx = temp.findIndex((x) => x === value);
-      if (idx !== -1) {
-        temp.splice(idx, 1);
-        setListChoose(temp);
+  const handleSetCheckbox = useCallback(
+    (value) => {
+      if (!listChoose.find((x) => x.Id === value.Id)) {
+        let a = [
+          ...listChoose,
+          {
+            ...value,
+            isSinhVien: activeIndex === 0,
+          },
+        ];
+        setListChoose(a);
+      } else {
+        let temp = listChoose;
+        let idx = temp.findIndex((x) => x === value).Id;
+        if (idx !== -1) {
+          temp.splice(idx, 1);
+          setListChoose(temp);
+        }
       }
-    }
-    setRefresh(!refresh);
-  };
-
-  const RenderItem = ({ item }) => (
-    <TouchableOpacity
-      key={item.item.Id}
-      style={[ip.container]}
-      onPress={() => handleSetCheckbox(item.item)}
-    >
-      <ThisAvatar
-        // url={item.item.Anh}
-        size={60}
-        name={item.item?.Ten || item.item?.TenNhanVien}
-      />
-      <View style={[ip.infomation]}>
-        <View style={[ip.infomationTop]}>
-          <Text style={[ip.infomationText]} numberOfLines={1}>
-            {item.item?.Ten || item.item?.TenNhanVien}
-          </Text>
-        </View>
-      </View>
-      {listChoose.find((x) => x.Id === item.item.Id) && (
-        <AntDesign name="checkcircle" size={20} color="green" />
-      )}
-    </TouchableOpacity>
+      setRefresh(!refresh);
+    },
+    [refresh]
   );
+
+  const RenderItem = ({ item }) =>
+    useMemo(() => {
+      return (
+        <TouchableOpacity
+          key={item.item.Id}
+          style={[ip.container]}
+          onPress={() => handleSetCheckbox(item.item)}
+        >
+          <ThisAvatar
+            // url={item.item.Anh}
+            size={60}
+            name={item.item?.Ten || item.item?.TenNhanVien}
+          />
+          <View style={[ip.infomation]}>
+            <View style={[ip.infomationTop]}>
+              <Text style={[ip.infomationText]} numberOfLines={1}>
+                {item.item?.Ten || item.item?.TenNhanVien}
+              </Text>
+            </View>
+          </View>
+          {listChoose.find((x) => x.Id === item.item.Id) && (
+            <AntDesign name="checkcircle" size={20} color="green" />
+          )}
+        </TouchableOpacity>
+      );
+    }, []);
 
   const ITEM_HEIGHT = 60;
 
@@ -509,6 +522,21 @@ export const ChatGroupPage = ({ props, route }) => {
       });
     }
   };
+
+  const getDataFlatlist = useMemo(() => {
+    let _listGiaoVien = listGiaoVien.filter((x) => x.Id !== currentUser.Id);
+    return keyword
+      ? activeIndex === 0
+        ? listUserCanChat.ListSinhVien.filter((x) =>
+            x.Ten.toLowerCase().trim().includes(keyword)
+          )
+        : _listGiaoVien.filter((x) =>
+            x.TenNhanVien.toLowerCase().trim().includes(keyword)
+          )
+      : activeIndex === 0
+      ? listUserCanChat.ListSinhVien
+      : _listGiaoVien;
+  }, [keyword, activeIndex]);
 
   return (
     <>
@@ -633,23 +661,14 @@ export const ChatGroupPage = ({ props, route }) => {
               style={{
                 maxHeight: listChoose.length ? height / 1.8 : height / 1.53,
               }}
-              data={
-                keyword
-                  ? activeIndex === 0
-                    ? listUserCanChat.ListSinhVien.filter((x) =>
-                        x.Ten.toLowerCase().trim().includes(keyword)
-                      )
-                    : listGiaoVien.filter((x) =>
-                        x.TenNhanVien.toLowerCase().trim().includes(keyword)
-                      )
-                  : activeIndex === 0
-                  ? listUserCanChat.ListSinhVien
-                  : listGiaoVien
-              }
+              maxToRenderPerBatch={30}
+              windowSize={21}
+              initialNumToRender={10}
+              data={getDataFlatlist}
               showsVerticalScrollIndicator={false}
               renderItem={(item) => <RenderItem item={item} />}
               getItemLayout={getItemLayout}
-              keyExtractor={(item, index) => index}
+              keyExtractor={(item, index) => createGuid()}
               ListFooterComponent={<View></View>}
             />
           </View>
@@ -836,6 +855,9 @@ export const ChatPersonalPage = ({ route }) => {
             <FlatList
               ref={refFlatlist}
               data={listMessage}
+              maxToRenderPerBatch={30}
+              windowSize={21}
+              initialNumToRender={10}
               // refreshing={refresh}
               // onRefresh={onRefresh}
               onScroll={(e) => {
@@ -887,7 +909,7 @@ export const ChatPersonalPage = ({ route }) => {
                 }
                 return <MyBoxChat props={{ item: item, type: _OBJDATE }} />;
               }}
-              keyExtractor={(item, index) => index}
+              keyExtractor={(item, index) => `ListChat` + item.item.Created}
               ListEmptyComponent={ListEmptyComponent}
               ListFooterComponent={
                 <View style={{ width: "100%", height: 10 }}></View>
@@ -1356,6 +1378,9 @@ export const ChatCustomPage = ({ route }) => {
                 style={{
                   maxHeight: 500,
                 }}
+                maxToRenderPerBatch={30}
+                windowSize={21}
+                initialNumToRender={10}
                 data={props.currentRoom.listUser}
                 showsVerticalScrollIndicator={false}
                 renderItem={(item) => (
@@ -1376,7 +1401,9 @@ export const ChatCustomPage = ({ route }) => {
                     </View>
                   </>
                 )}
-                keyExtractor={(item, index) => index}
+                keyExtractor={(item, index) =>
+                  `ListUserInChat` + item.item.TenUser
+                }
                 ListFooterComponent={<View></View>}
               />
             </View>

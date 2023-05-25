@@ -14,7 +14,7 @@ import { Colors, height, Screens, width } from "../../../common/constant";
 import { QuyTrinhServices } from "../../../services/danhmuc.service";
 import { ItemChildSchedule, ItemSchedule } from "../../schedules";
 
-export default function LichHocHomNayComponent() {
+export default function LichHocHomNayComponent({ props }) {
   const nav = useNavigation();
   const [today, setToday] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,7 @@ export default function LichHocHomNayComponent() {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [props.refreshing.refreshing]);
 
   return (
     <View style={[styles.container]}>

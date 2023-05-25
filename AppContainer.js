@@ -27,6 +27,7 @@ import DanhSachSoGiaoAn from './src/screens/schedules/popuup/danh_sach_so_giao_a
 import { ChatCustomPage, ChatGroupPage, ChatPersonalPage } from './src/screens/chat';
 import { useEffect } from 'react';
 import { setBaseUrl } from './src/redux/actions/baseurlAction';
+import ChatBotPage from './src/screens/chatbot/ChatBotPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,8 @@ function StackNavigator() {
     <Stack.Screen name={Screens.TuyChon} component={ChatCustomPage} />
     <Stack.Screen name={Screens.ChatPersonalPage} component={ChatPersonalPage} />
     <Stack.Screen name={Screens.TaoNhom} component={ChatGroupPage} />
+    <Stack.Screen name={Screens.ChatBot} component={ChatBotPage} />
+
   </Stack.Navigator>
 }
 

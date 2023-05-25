@@ -330,17 +330,19 @@ const GiangDayT = ({ FileDinhKem }) => {
                                     <Portal>
                                         <Dialog visible={visible} onDismiss={hideDialog}>
                                             <Dialog.ScrollArea>
-                                                <ScrollView contentContainerStyle={{ paddingHorizontal: 24 }}>
-                                                    <View>
+                                                <ScrollView contentContainerStyle={{ paddingHorizontal: 0 }}>
+                                                   <View style={{paddingTop:10,paddingBottom:10}}>
+                                                   <View style={{paddingTop:10,paddingBottom:10}}>
                                                         <Text>Người tải lên: {x?.NguoiUp}</Text>
                                                     </View>
-                                                    <View>
+                                                    <View style={{paddingTop:10,paddingBottom:10}}>
                                                         <Text>Thời gian tải lên tải lên: {formatDateStringGMT(x?.NgayUp, "dd/mm/yyyy")} </Text>
                                                     </View>
+                                                   </View>
                                                 </ScrollView>
                                             </Dialog.ScrollArea>
                                             <Dialog.Actions>
-                                                <Button onPress={hideDialog}>Done</Button>
+                                                <Button onPress={hideDialog}>Đóng</Button>
                                             </Dialog.Actions>
                                         </Dialog>
                                     </Portal>

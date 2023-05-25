@@ -118,7 +118,7 @@ export default function Infor() {
               buttonColor="red"
               color="red"
             >
-              <View style={styles.flex}>
+              <View style={styles.justifyContent_left}>
                 <View style={[styles.flex,styles.mr]}>
                   <RadioButton.Android value={0} />
                   <Text>Nam</Text>
@@ -237,6 +237,11 @@ const styles = StyleSheet.create({
   flex: {
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
+  },
+  justifyContent_left: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
     alignItems: "center",
   },
   RadioButton: {

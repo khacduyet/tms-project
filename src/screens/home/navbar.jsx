@@ -121,6 +121,7 @@ export default function HomeNavBar({ currentUser }) {
 
 export function NotificationPage() {
   const currentUser = useSelector((state) => state.currentUser);
+  const notify = useSelector((state) => state.notify);
   const [lastId, setLastId] = useState(`0`);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -211,7 +212,8 @@ export function NotificationPage() {
 
   return (
     <SafeAreaView style={[]}>
-      <HeaderBack header={Screens.Notification} RightItem={rightItem} />
+      <HeaderBack header={`${Screens.Notification} ${notify?.Count > 0 ? `(${notify?.Count})` : ``
+        }`} RightItem={rightItem} />
       <View style={[styles.wrapNotification]}>
         <FlatList
           data={notifies}

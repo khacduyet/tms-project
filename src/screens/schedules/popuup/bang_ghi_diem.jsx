@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, useColorScheme, View, TextInput as MyTextInput } from 'react-native';
+import { Text, StyleSheet, useColorScheme, View, TextInput as MyTextInput, Modal, FlatList, } from 'react-native';
 import HeaderBack from "../../../common/header";
 import { Screens } from "../../../common/constant";
 import { SafeAreaView } from "react-native";
@@ -12,14 +12,18 @@ import { ScrollView } from "react-native";
 import { useEffect } from "react";
 import { AuthServices, QuyTrinhServices } from "../../../services/danhmuc.service";
 import { ToastMessage } from "../../../common/components";
+import { Dimensions } from "react-native";
+import { useMemo } from "react";
+import { SimpleLineIcons } from "@expo/vector-icons";
+import { Pressable } from 'react-native';
 
 export default function BangGhiDiem({ route }) {
     const { itemdiemdanh, item } = route.params;
     const [listLoaiDiem, setListLoaiDiem] = useState([]);
     const nav = useNavigation();
+    const [activeIndex, setActiveIndex] = useState(null)
 
     const [obj_data, setObj_data] = useState({})
-
     // API ------ 
     const getAllOptions = async () => {
         let $loaidiem = QuyTrinhServices.SinhVien.GetListdmLoaiDiem({});
@@ -73,6 +77,15 @@ export default function BangGhiDiem({ route }) {
             ToastMessage(res.Detail);
         }
     };
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [index, setIndex] = useState(null);
+    const getTenLoaiDiem = (id) => {
+        let _thisLD = listLoaiDiem.find(x => x.Id === id);
+        if (_thisLD)
+            return _thisLD.Ten;
+        return ``
+    }
     // .end -----
     return (
         <SafeAreaView>
@@ -112,27 +125,23 @@ export default function BangGhiDiem({ route }) {
                             variant="standard" />
                     </View>
                 </View>
-                <View style={styles.body}>
+                {/* <View style={styles.body}>
                     <View>
                         <View style={styles.table_header}>
                             <View style={{ width: '45%' }}><Text style={styles.table_caption}>Họ Tên / MSV</Text></View>
                             <View style={{ width: '25%' }}><Text style={styles.table_caption}>Điểm</Text></View>
                             <View style={{ width: '30%' }}><Text style={styles.table_caption}>Loại điểm</Text></View>
                         </View>
-                        <ScrollView style={{ height: 400 }}>
+                        <ScrollView style={{ height: Dimensions.get("window").height / 2.5 }}>
                             {
                                 obj_data.listDanhSachSinhVien?.map((x, idx) => {
                                     return (
                                         <View style={styles.table_body}>
-                                            <View style={{ width: '45%', }}><Text style={[styles.table_data, styles.ptop]}>{x.TenGhep}</Text></View>
+                                            <View style={{ width: '45%', }}>
+                                                <Text style={[styles.table_data, styles.ptop]}>{x.TenGhep}</Text>
+                                                <Text style={[styles.table_data, styles.ptop]}>{x.MaSinhVien}</Text></View>
                                             <View style={{ width: '25%', }}>
                                                 <View>
-                                                    {/* <MyTextInput
-                                                        style={styles.input_text}
-                                                        keyboardType='number-pad'
-                                                        value={x.itemBangDiemHangNgay.Diem?.toString()}
-                                                        onChangeText={(e) => setForm(e, idx, 'Diem')}
-                                                    /> */}
                                                     <TextInput
                                                         keyboardType='numeric'
                                                         value={x.itemBangDiemHangNgay.Diem?.toString()}
@@ -153,6 +162,7 @@ export default function BangGhiDiem({ route }) {
                                                     valueField={'value'}
                                                     placeholder="Chọn"
                                                     style={[styles.dropdown, styles.flex]}
+                                                    maxHeight={250}
                                                     searchPlaceholder="Search..."
                                                     value={x.itemBangDiemHangNgay.IdLoaiDiem}
                                                     onChange={(e) => {
@@ -172,12 +182,158 @@ export default function BangGhiDiem({ route }) {
                         style={{ width: '75%' }}>
                         Xác nhận
                     </Button>
+                </View> */}
+                <View style={{ borderTopWidth: 1, borderColor: '#666666', margin: 10 }}>
+                    <ScrollView style={{ height: Dimensions.get("window").height / 2.5 }}>
+                        {
+                            obj_data.listDanhSachSinhVien?.map((x, idx) => {
+                                return (
+                                    <View style={styles.itemTable}>
+                                        <View style={[styles.sinhvien, styles.d_flex, styles.justifyContent_between]}>
+                                            <View><Text>{idx + 1}.18A10010121</Text></View>
+                                            <View><Text style={{ textAlign: 'left' }}>{x.TenGhep}</Text></View>
+                                            <View>
+                                                <Pressable onPress={() => {
+                                                    setActiveIndex(idx)
+                                                }}>
+                                                    {activeIndex === idx ? <SimpleLineIcons name="arrow-up" size={23} color="black" /> : <SimpleLineIcons name="arrow-down" size={23} color="black" />}
+
+                                                </Pressable>
+                                            </View>
+                                        </View>
+                                        {activeIndex === idx && <View style={{ paddingLeft: 16 }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom:20,marginTop:20, }}>
+                                                <View style={{ width: 100 }}><Text>Điểm</Text></View>
+                                                <TextInput
+                                                    keyboardType='numeric'
+                                                    style={{ flex: 1, paddingLeft: 35}}
+                                                    inputContainerStyle={{height:50}}
+                                                    value={x.itemBangDiemHangNgay.Diem?.toString()}
+                                                    onChangeText={(e) => setForm(e, idx, 'Diem')} />
+
+                                            </View>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <Dropdown
+                                                    data={listLoaiDiem.map(x => {
+                                                        return {
+                                                            label: x.Ten,
+                                                            value: x.Id
+                                                        }
+                                                    })}
+                                                    autoScroll
+                                                    itemContainerStyle={{}}
+                                                    labelField={'label'}
+                                                    valueField={'value'}
+                                                    placeholder="Chọn"
+                                                    style={[styles.dropdown, styles.flex]}
+                                                    maxHeight={250}
+                                                    searchPlaceholder="Search..."
+                                                    value={x.itemBangDiemHangNgay.IdLoaiDiem}
+                                                    onChange={(e) => {
+                                                        setForm(e.value, idx, 'IdLoaiDiem')
+                                                    }} />
+                                            </View>
+                                        </View>}
+                                    </View>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                </View>
+                <View style={styles.btn}>
+                    <Button icon="check" mode="contained"
+                        onPress={GhiLai}
+                        style={{ width: '75%' }}>
+                        Xác nhận
+                    </Button>
                 </View>
             </View>
         </SafeAreaView>
     )
 }
+
+const Select = (props) => {
+    return (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={props?.visible}
+            onRequestClose={() => {
+            }}
+        >
+            <View style={select.modalView}>
+                <View style={select.content}>
+                    <View style={select.header}>
+                        <Text>Chọn Loại Điểm</Text>
+                        <Text style={{ color: 'red' }}
+                            onPress={() => {
+                                props.onHide(false)
+                            }}>Đóng</Text>
+                    </View>
+                    <View style={select.body}>
+                        {
+                            <FlatList
+                                data={props.listLoaiDiem}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <View>
+                                            <Text style={{ textAlign: 'center', padding: 16 }} onPress={() => { props.onSelect(item.Id) }}>
+                                                {item.Ten}</Text>
+                                        </View>
+                                    )
+                                }}
+                                keyExtractor={item => item.Id}
+                            />
+                        }
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    )
+}
+
+const select = {
+    modalView: {
+        flex: 1,
+        backgroundColor: '#000000AA'
+    },
+    content: {
+        bottom: 0,
+        position: 'absolute',
+        width: '100%',
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        height: Dimensions.get('window').height * 0.4,
+        maxHeight: Dimensions.get('window').height * 0.4,
+    },
+    header: {
+        borderBottomWidth: 1,
+        borderColor: '#C0C0C0',
+        height: Dimensions.get('window').height * 0.06,
+        maxHeight: Dimensions.get('window').height * 0.06,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingLeft: 16,
+        paddingRight: 16
+    },
+    title: {
+
+    },
+    textAlign_center: {
+        textAlign: 'center'
+    },
+    textAlign_right: {
+        textAlign: 'right'
+    }
+}
+
 const styles = {
+    itemTable: {
+        paddingTop: 20,
+        paddingBottom: 20, borderBottomWidth: 1, borderColor: '#666666'
+    },
     btn: {
         paddingTop: 30,
         flexDirection: "row",
@@ -233,7 +389,7 @@ const styles = {
         width: '45%'
     },
     dropdown: {
-        height: 40,
+
         backgroundColor: 'white',
         borderRadius: 12,
         padding: 12,
@@ -245,6 +401,7 @@ const styles = {
         shadowOpacity: 0.2,
         shadowRadius: 1.41,
         elevation: 2,
+        width: '100%'
     },
     input_text: {
         height: 40,
@@ -254,4 +411,11 @@ const styles = {
         borderColor: '#ced4da',
         borderRadius: 8
     },
+    d_flex: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    justifyContent_between: {
+        justifyContent: 'space-between'
+    }
 }

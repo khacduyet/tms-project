@@ -7,7 +7,7 @@ const axiosClient = axios.create({
     ContentType: "application/json;charset=UTF-8",
     Accept: "application/json, text/plain, */*"
   },
-  baseURL: `http://103.130.212.45:2999/`,
+  baseURL: `http://103.130.212.35:2999/`,
   withCredentials: true,
   timeout: 30000,
 });

@@ -170,7 +170,7 @@ export default function SoGiaoAn({ route }) {
                 <View style={styles.btn}>
                     <Button icon="check" mode="contained"
                         onPress={GhiLai}
-                        style={{ width: '75%' }}>
+                        style={{ width: '75%', backgroundColor: "#037bff" }}>
                         Xác nhận
                     </Button>
                 </View>

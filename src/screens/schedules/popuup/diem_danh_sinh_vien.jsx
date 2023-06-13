@@ -42,6 +42,7 @@ export default function DiemDanhSinhVien({ route }) {
 
         let res = await QuyTrinhServices.SinhVien.GetDiemDanhSinhVien(data);
         if (res) {
+            console.log(res);
             setObj_data(res)
         }
     };
@@ -156,7 +157,8 @@ export default function DiemDanhSinhVien({ route }) {
                                             <View style={{ width: '25%' }}>
                                                 <View>
                                                     <TextInput
-                                                        keyboardType='numeric'
+                                                      keyboardType="decimal-pad"
+                                                      autoCapitalize="none"
                                                         value={x.itemDiemDanhHangNgay.SoGioNghi}
                                                         onChangeText={(e) => setForm(e, idx, 'SoGioNghi')} />
 
@@ -182,7 +184,7 @@ export default function DiemDanhSinhVien({ route }) {
                 <View style={styles.btn}>
                     <Button icon="check" mode="contained"
                         onPress={GhiLai}
-                        style={{ width: '75%' }}>
+                        style={{ width: '75%', backgroundColor: "#037bff" }}>
                         Xác nhận
                     </Button>
                 </View>

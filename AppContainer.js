@@ -23,11 +23,11 @@ import BangGhiDiem from './src/screens/schedules/popuup/bang_ghi_diem';
 import SoGiaoAn from './src/screens/schedules/popuup/so_giao_an';
 import ChiTietBaiGiang from './src/screens/schedules/popuup/chi_tiet_bai_giang';
 import KhaiBaoThucGiang from './src/screens/schedules/popuup/khai_bao_thuc_giang';
-import DanhSachSoGiaoAn from './src/screens/schedules/popuup/danh_sach_so_giao_an';
 import { ChatCustomPage, ChatGroupPage, ChatPersonalPage } from './src/screens/chat';
 import { useEffect } from 'react';
 import { setBaseUrl } from './src/redux/actions/baseurlAction';
 import ChatBotPage from './src/screens/chatbot/ChatBotPage';
+import DanhSachSoGiaoAn from './src/screens/home/sogiaoan/danh_sach_so_giao_an';
 
 const Stack = createNativeStackNavigator();
 
@@ -71,6 +71,7 @@ function StackNavigator() {
     <Stack.Screen name={Screens.ChatPersonalPage} component={ChatPersonalPage} />
     <Stack.Screen name={Screens.TaoNhom} component={ChatGroupPage} />
     <Stack.Screen name={Screens.ChatBot} component={ChatBotPage} />
+    <Stack.Screen name={`LIST_SOGIAOAN`} component={DanhSachSoGiaoAn} />
 
   </Stack.Navigator>
 }

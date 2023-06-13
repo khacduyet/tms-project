@@ -15,7 +15,7 @@ const COMPONENTS_WITHPAGES = [
     page: 1,
     components: [
       {
-        label: `Đăng ký học phần`,
+        label: `Thời khóa biểu`,
         icon: (
           <Image
             source={require("../../../resources/icons/color-calendar.png")}
@@ -29,14 +29,14 @@ const COMPONENTS_WITHPAGES = [
           // />
         ),
         onPress: (nav) => {
-          // nav.navigate(Screens.Setting);
+          nav.navigate(Screens.Schedula);
         },
       },
       {
-        label: `Đăng ký học lại`,
+        label: `Giờ giảng`,
         icon: (
           <Image
-            source={require("../../../resources/icons/color-register.png")}
+            source={require("../../../resources/icons/Color-pencil.png")}
             style={{ width: SIZE_ICON, height: SIZE_ICON }}
             resizeMode="stretch"
           />
@@ -46,10 +46,12 @@ const COMPONENTS_WITHPAGES = [
           //   color={Colors.Primary}
           // />
         ),
-        onPress: (nav) => {},
+        onPress: (nav) => {
+          nav.navigate(Screens.Academic);
+        },
       },
       {
-        label: `Kế hoạch đào tạo`,
+        label: `Sổ giáo án`,
         icon: (
           <Image
             source={require("../../../resources/icons/color-book.png")}
@@ -59,45 +61,59 @@ const COMPONENTS_WITHPAGES = [
           // <AntDesign name="book" size={SIZE_ICON} color={Colors.Primary} />
         ),
         onPress: (nav) => {
-          nav.push(Screens.TrainingPlan);
+          nav.push(`LIST_SOGIAOAN`);
         },
       },
       {
-        label: `Điểm danh`,
+        label: `Trò chuyện`,
         icon: (
           <Image
-            source={require("../../../resources/icons/color-checkpoint.png")}
+            source={require("../../../resources/icons/Color-chat.png")}
             style={{ width: SIZE_ICON, height: SIZE_ICON }}
             resizeMode="stretch"
           />
-          // <FontAwesome5
-          //   name="user-clock"
-          //   size={SIZE_ICON}
-          //   color={Colors.Primary}
-          // />
+          // <AntDesign name="book" size={SIZE_ICON} color={Colors.Primary} />
         ),
         onPress: (nav) => {
-          nav.navigate(Screens.Attendance);
+          nav.navigate(Screens.Chat);
         },
       },
-      {
-        label: `Bảng điểm`,
-        icon: (
-          <Image
-            source={require("../../../resources/icons/color-point.png")}
-            style={{ width: SIZE_ICON, height: SIZE_ICON }}
-            resizeMode="stretch"
-          />
-          // <MaterialCommunityIcons
-          //   name="book-refresh"
-          //   size={SIZE_ICON}
-          //   color={Colors.Primary}
-          // />
-        ),
-        onPress: (nav) => {
-          nav.navigate(Screens.Academic);
-        },
-      },
+      // {
+      //   label: `Điểm danh`,
+      //   icon: (
+      //     <Image
+      //       source={require("../../../resources/icons/color-checkpoint.png")}
+      //       style={{ width: SIZE_ICON, height: SIZE_ICON }}
+      //       resizeMode="stretch"
+      //     />
+      //     // <FontAwesome5
+      //     //   name="user-clock"
+      //     //   size={SIZE_ICON}
+      //     //   color={Colors.Primary}
+      //     // />
+      //   ),
+      //   onPress: (nav) => {
+      //     nav.navigate(Screens.Attendance);
+      //   },
+      // },
+      // {
+      //   label: `Bảng điểm`,
+      //   icon: (
+      //     <Image
+      //       source={require("../../../resources/icons/color-point.png")}
+      //       style={{ width: SIZE_ICON, height: SIZE_ICON }}
+      //       resizeMode="stretch"
+      //     />
+      //     // <MaterialCommunityIcons
+      //     //   name="book-refresh"
+      //     //   size={SIZE_ICON}
+      //     //   color={Colors.Primary}
+      //     // />
+      //   ),
+      //   onPress: (nav) => {
+      //     nav.navigate(Screens.Academic);
+      //   },
+      // },
       {
         label: `Hồ sơ cá nhân`,
         icon: (
@@ -275,7 +291,7 @@ const components = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
   },
   box: {
     width: "33%",

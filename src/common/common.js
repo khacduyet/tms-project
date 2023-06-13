@@ -152,6 +152,12 @@ export const TYPEDATE = {
     2: `Hôm qua`,
 }
 
+export const _stl = {
+    _container: {
+        backgroundColor: "#fff"
+    }
+}
+
 export function getTypeToDate(datestring) {
     const dateNow = new Date();
     const YEAR = dateNow.getFullYear();

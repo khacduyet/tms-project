@@ -3,8 +3,10 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Swiper from "react-native-swiper";
-import { Screens } from "../../common/constant";
+import { Colors, Screens, TextButton } from "../../common/constant";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button } from "../../common/components";
+import { _stl } from "../../common/common";
 
 const Page2 = () => {
   const nav = useNavigation();
@@ -27,23 +29,27 @@ const Page2 = () => {
   return (
     <View style={[s.wrapper, s.wrapper2]}>
       <View style={[s.wrapperView]}>
-        <Text style={[s.text, { fontSize: 20 }]}>
+        <Text style={[s.text, { fontSize: 20 }, s.components]}>
           Mời bạn nhập đường dẫn Server
         </Text>
-      </View>
-      <View style={[s.wrapperView]}>
         <TextInput
-          variant="standard"
-          style={[s.textInput]}
+          // variant="standard"
+          style={[s.textInput, s.components]}
           value={url}
+          color="#000"
           onChangeText={setUrl}
         />
+        <Button
+          text={TextButton.Next}
+          onPress={handleSetUrl}
+          style={{
+            button: { ...s.button, ...s.components },
+            buttonText: { ...s.text, color: "#fff" },
+          }}
+        />
       </View>
-      <View style={[s.wrapperView]}>
-        <TouchableOpacity style={[s.button]} onPress={handleSetUrl}>
-          <Text style={[s.text]}>Tiếp theo</Text>
-        </TouchableOpacity>
-      </View>
+      {/* <View style={[s.wrapperView]}></View>
+      <View style={[s.wrapperView]}></View> */}
     </View>
   );
 };
@@ -82,18 +88,24 @@ const s = StyleSheet.create({
     padding: 20,
   },
   wrapper2: {
-    backgroundColor: "#2FF0FA",
+    backgroundColor: "#fff",
+    // backgroundColor: "#4891ff",
     flexDirection: "column",
   },
   wrapperView: {
     width: "100%",
+    paddingTop: 50,
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
   },
+  components: {
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
   text: {
-    fontSize: 30,
-    color: "#fff",
+    fontSize: 25,
+    color: "#000",
     fontWeight: 700,
     textAlign: "center",
   },
@@ -101,24 +113,24 @@ const s = StyleSheet.create({
     width: "80%",
   },
   button: {
-    width: "70%",
+    width: "80%",
     borderRadius: 50,
     height: 50,
     justifyContent: "center",
     textAlign: "center",
-    backgroundColor: "#000",
+    backgroundColor: `#037bff`,
   },
 });
 
 const slides = [
-  {
-    page: 1,
-    view: (key) => (
-      <View style={[s.wrapper, s.wrapper1]} key={key}>
-        <Text style={[s.text]}>Chào mừng bạn đến với ứng dụng Giáo viên</Text>
-      </View>
-    ),
-  },
+  // {
+  //   page: 1,
+  //   view: (key) => (
+  //     <View style={[s.wrapper, s.wrapper1]} key={key}>
+  //       <Text style={[s.text]}>Chào mừng bạn đến với ứng dụng Sinh viên</Text>
+  //     </View>
+  //   ),
+  // },
   {
     page: 2,
     view: (key) => <Page2 key={key} />,
@@ -129,7 +141,7 @@ export default function TutorialPreview() {
   const swiper = React.createRef();
   const [page, setPage] = useState(0);
   return (
-    <View style={[s.container]}>
+    <View style={[s.container, _stl._container]}>
       {page !== slides.length - 1 && (
         <TouchableOpacity
           style={[s.buttonSkip]}

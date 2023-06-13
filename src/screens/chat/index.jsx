@@ -323,7 +323,7 @@ const ModalAddChat = ({ props }) => {
           />
         )}
         getItemLayout={getItemLayout}
-        keyExtractor={(item, index) => `ListGeneral` + item.item.Created}
+        keyExtractor={(item, index) => `ListGeneral` + item.item?.Created}
         ListEmptyComponent={ListEmptyComponent}
         ListFooterComponent={<View></View>}
       />
@@ -909,7 +909,7 @@ export const ChatPersonalPage = ({ route }) => {
                 }
                 return <MyBoxChat props={{ item: item, type: _OBJDATE }} />;
               }}
-              keyExtractor={(item, index) => `ListChat` + item.item.Created}
+              keyExtractor={(item, index) => `ListChat` + item.item?.Created}
               ListEmptyComponent={ListEmptyComponent}
               ListFooterComponent={
                 <View style={{ width: "100%", height: 10 }}></View>

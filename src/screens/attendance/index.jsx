@@ -69,6 +69,7 @@ export default function AttendancePage() {
         res = [...Array(5)];
       }
       // end fake dữ liệu
+      console.log("res", res);
       setListDiemDanh(res);
     }
   };

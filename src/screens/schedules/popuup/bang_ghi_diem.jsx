@@ -80,11 +80,25 @@ export default function BangGhiDiem({ route }) {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [index, setIndex] = useState(null);
+    const [reload, setReload] = useState(false);
     const getTenLoaiDiem = (id) => {
         let _thisLD = listLoaiDiem.find(x => x.Id === id);
         if (_thisLD)
             return _thisLD.Ten;
         return ``
+    }
+    const getShow = (index) => {
+        let arr = obj_data.listDanhSachSinhVien.map((ele, idx) => {
+            return {
+                ...ele,
+                isShow: ele.isShow ? (!ele.isShow) : (idx === index ? true : false)
+            }
+        });
+        let data = {
+            ...obj_data,
+            listDanhSachSinhVien: arr
+        }
+        setObj_data(data)
     }
     // .end -----
     return (
@@ -183,6 +197,13 @@ export default function BangGhiDiem({ route }) {
                         Xác nhận
                     </Button>
                 </View> */}
+                <View>
+                    <Text style={{ fontWeight: 'bold', fontSize:'18',margin: 10
+                
+                
+                
+                }}>Danh sách sinh viên</Text>
+                </View>
                 <View style={{ borderTopWidth: 1, borderColor: '#666666', margin: 10 }}>
                     <ScrollView style={{ height: Dimensions.get("window").height / 2.5 }}>
                         {
@@ -190,24 +211,34 @@ export default function BangGhiDiem({ route }) {
                                 return (
                                     <View style={styles.itemTable}>
                                         <View style={[styles.sinhvien, styles.d_flex, styles.justifyContent_between]}>
-                                            <View><Text>{idx + 1}.18A10010121</Text></View>
-                                            <View><Text style={{ textAlign: 'left' }}>{x.TenGhep}</Text></View>
+                                            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                                                <View style={{ width: 152 }}><Text>{idx + 1}.18A10010121</Text></View>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}><Text >{x.TenGhep}</Text></View>
+                                            </View>
                                             <View>
                                                 <Pressable onPress={() => {
-                                                    setActiveIndex(idx)
-                                                }}>
-                                                    {activeIndex === idx ? <SimpleLineIcons name="arrow-up" size={23} color="black" /> : <SimpleLineIcons name="arrow-down" size={23} color="black" />}
+                                                    // setActiveIndex(idx)
 
+                                                    // if (activeIndex) {
+                                                    //     setActiveIndex(null)
+                                                    // } else setActiveIndex(idx)
+                                                    // setReload(!reload)
+                                                    getShow(idx)
+                                                    setReload(!reload)
+                                                }}>
+                                                    {/* {activeIndex === idx ? <SimpleLineIcons name="arrow-up" size={23} color="black" /> : <SimpleLineIcons name="arrow-down" size={23} color="black" />} */}
+                                                    {x.isShow ? <SimpleLineIcons name="arrow-up" size={23} color="black" />
+                                                        : <SimpleLineIcons name="arrow-down" size={23} color="black" />}
                                                 </Pressable>
                                             </View>
                                         </View>
-                                        {activeIndex === idx && <View style={{ paddingLeft: 16 }}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom:20,marginTop:20, }}>
+                                        {x.isShow && <View style={{ paddingLeft: 16 }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20, marginTop: 20, }}>
                                                 <View style={{ width: 100 }}><Text>Điểm</Text></View>
                                                 <TextInput
                                                     keyboardType='numeric'
-                                                    style={{ flex: 1, paddingLeft: 35}}
-                                                    inputContainerStyle={{height:50}}
+                                                    style={{ flex: 1, paddingLeft: 35 }}
+                                                    inputContainerStyle={{ height: 50 }}
                                                     value={x.itemBangDiemHangNgay.Diem?.toString()}
                                                     onChangeText={(e) => setForm(e, idx, 'Diem')} />
 
@@ -224,7 +255,7 @@ export default function BangGhiDiem({ route }) {
                                                     itemContainerStyle={{}}
                                                     labelField={'label'}
                                                     valueField={'value'}
-                                                    placeholder="Chọn"
+                                                    placeholder="Chọn loại điểm"
                                                     style={[styles.dropdown, styles.flex]}
                                                     maxHeight={250}
                                                     searchPlaceholder="Search..."
@@ -243,7 +274,7 @@ export default function BangGhiDiem({ route }) {
                 <View style={styles.btn}>
                     <Button icon="check" mode="contained"
                         onPress={GhiLai}
-                        style={{ width: '75%' }}>
+                        style={{ width: '75%', backgroundColor: "#037bff" }}>
                         Xác nhận
                     </Button>
                 </View>

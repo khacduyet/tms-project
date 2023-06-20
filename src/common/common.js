@@ -176,3 +176,5 @@ export function getTypeToDate(datestring) {
     }
     return formatDateStringGMT(date, 'dd/mm/yyyy')
 }
+
+export const APP_NAME = `Ứng dụng quản lý giáo viên`

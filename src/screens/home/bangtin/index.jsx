@@ -101,7 +101,7 @@ export default function BangTinComponent() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 0,
     marginBottom: 10,
     width: "95%",
     height: 350,

@@ -236,7 +236,12 @@ const COMPONENTS_WITHPAGES = [
 export default function ChucNangComponent() {
   return (
     <View style={[styles.container]}>
-      <Swiper>
+      <Swiper
+        style={{
+          height: 240,
+        }}
+        paginationStyle={{ bottom: 5 }}
+      >
         {COMPONENTS_WITHPAGES.map((x, index) => {
           return <Component_Page key={index} lstData={x.components} {...x} />;
         })}
@@ -267,11 +272,11 @@ const Component_Page = ({ lstData }) => {
     </View>
   );
 };
-
+const height_container = 235;
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    height: 250,
+    marginTop: 10,
+    height: height_container,
     marginLeft: 10,
     marginRight: 10,
   },

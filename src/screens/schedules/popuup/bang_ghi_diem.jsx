@@ -198,11 +198,7 @@ export default function BangGhiDiem({ route }) {
                     </Button>
                 </View> */}
                 <View>
-                    <Text style={{ fontWeight: 'bold', fontSize:'18',margin: 10
-                
-                
-                
-                }}>Danh sách sinh viên</Text>
+                    <Text style={styles.danhsachsv}>Danh sách sinh viên</Text>
                 </View>
                 <View style={{ borderTopWidth: 1, borderColor: '#666666', margin: 10 }}>
                     <ScrollView style={{ height: Dimensions.get("window").height / 2.5 }}>
@@ -211,7 +207,7 @@ export default function BangGhiDiem({ route }) {
                                 return (
                                     <View style={styles.itemTable}>
                                         <View style={[styles.sinhvien, styles.d_flex, styles.justifyContent_between]}>
-                                            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                                 <View style={{ width: 152 }}><Text>{idx + 1}.18A10010121</Text></View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}><Text >{x.TenGhep}</Text></View>
                                             </View>
@@ -448,5 +444,13 @@ const styles = {
     },
     justifyContent_between: {
         justifyContent: 'space-between'
+    },
+    danhsachsv: {
+        fontWeight: 'bold',
+
+
+        
+        fontSize: 18,
+        margin: 10
     }
 }

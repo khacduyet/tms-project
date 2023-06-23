@@ -95,12 +95,12 @@ export default function HomeMore() {
               <Text style={[styles.navText]} numberOfLines={1}>
                 MSV: {currentUser && currentUser.MaNhanVien}
               </Text>
-              <Text style={[styles.navText]} numberOfLines={1}>
+              {/* <Text style={[styles.navText]} numberOfLines={1}>
                 Lớp: C22-Han-01
               </Text>
               <Text style={[styles.navText]} numberOfLines={1}>
                 Khóa: 2022-2025 - Cao đẳng
-              </Text>
+              </Text> */}
             </View>
           </ImageBackground>
         </View>

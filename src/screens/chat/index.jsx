@@ -418,6 +418,7 @@ export const ChatGroupPage = ({ props, route }) => {
   const [refresh, setRefresh] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector((state) => state.currentUser);
+  const [page, setPage] = useState(1);
 
   const handleSetCheckbox = useCallback(
     (value) => {
@@ -1052,7 +1053,12 @@ const HeaderTitle = ({ props }) => {
 
   return (
     <View style={[cpp.head.container]}>
-      <TouchableOpacity style={[cpp.head.headerArrow]} onPress={nav.goBack}>
+      <TouchableOpacity
+        style={[cpp.head.headerArrow]}
+        onPress={() => {
+          nav.navigate(Screens.Chat);
+        }}
+      >
         <View>
           <MaterialIcons name="arrow-back-ios" size={SIZE_ICON} color="black" />
         </View>
@@ -1066,7 +1072,7 @@ const HeaderTitle = ({ props }) => {
                 {_thisRoom?.TenRoom}
               </Text>
               {_thisRoom?.isGroup && (
-                <Text style={[cpp.ht.text, { fontSize: 13, color: "blue" }]}>
+                <Text style={[cpp.ht.text, { fontSize: 13 }]}>
                   {props.currentRoom.listUser.length} thành viên
                 </Text>
               )}
@@ -1402,7 +1408,7 @@ export const ChatCustomPage = ({ route }) => {
                   </>
                 )}
                 keyExtractor={(item, index) =>
-                  `ListUserInChat` + item.item.TenUser
+                  `ListUserInChat` + item.item?.TenUser
                 }
                 ListFooterComponent={<View></View>}
               />

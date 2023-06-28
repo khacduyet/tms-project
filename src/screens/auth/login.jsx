@@ -211,15 +211,10 @@ function BodyLogin({
   setFingerPrint,
   account,
   setAccount,
-  refresh,
-  setRefresh,
 }) {
   const route = useRoute();
-  const nav = useNavigation();
-  // const [account, setAccount] = useState(initialAccount);
   const [submitForm, setSubmitForm] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  // const [refresh, setRefresh] = useState(false);
 
   const tokenReducer = useSelector((state) => state.tokenReducer);
   const currentUser = useSelector((state) => state.currentUser);
@@ -264,45 +259,6 @@ function BodyLogin({
     });
   };
 
-  const handleLogout = () => {
-    Alert.alert("Thông báo", "Bạn có chắc muốn đổi tài khoản?", [
-      {
-        text: TextButton.Cancel,
-        onPress: () => {},
-      },
-      {
-        text: TextButton.Accept,
-        onPress: () => {
-          dispatch(logoutSubmit());
-          setAccount(initialAccount);
-          setRefresh(!refresh);
-        },
-      },
-    ]);
-  };
-
-  useEffect(() => {
-    if (route.name === Screens.Login) {
-      dispatch(getCurrentUser());
-      if (hasBiometric) {
-        navigation.navigate(Screens.Home);
-        dispatch(setLoading(false));
-        return;
-      } else {
-        if (!account.password) {
-          return;
-        }
-      }
-      if (submitForm) {
-        if (currentUser && currentUser.TenNhanVien) {
-          setAccount(initialAccount);
-          navigation.navigate(Screens.Home);
-          dispatch(setLoading(false));
-        }
-      }
-    }
-  }, [tokenReducer, currentUser?.Id, hasBiometric]);
-
   useEffect(() => {
     let userRem = {
       hasRemember: currentUser && currentUser?.Id ? true : false,
@@ -333,8 +289,30 @@ function BodyLogin({
   };
   useEffect(() => {
     getAvatar();
-  }, [currentUser.LinkAnhDaiDien]);
+  }, [currentUser]);
   //#endregion Lấy avatar
+
+  useEffect(() => {
+    if (route.name === Screens.Login) {
+      dispatch(getCurrentUser());
+      if (hasBiometric) {
+        navigation.navigate(Screens.Home);
+        dispatch(setLoading(false));
+        return;
+      } else {
+        if (!account.password) {
+          return;
+        }
+      }
+      if (submitForm) {
+        if (currentUser && currentUser.TenNhanVien) {
+          setAccount(initialAccount);
+          navigation.navigate(Screens.Home);
+          dispatch(setLoading(false));
+        }
+      }
+    }
+  }, [tokenReducer, currentUser?.Id, hasBiometric]);
 
   return (
     <View

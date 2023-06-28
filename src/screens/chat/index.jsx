@@ -232,7 +232,7 @@ const ModalAddChat = ({ props }) => {
   const [listGV, setListGV] = useState(props.listGV);
   const [listSV, setListSV] = useState(props.listSV.ListSinhVien);
   const [keyword, setKeyword] = useState(null);
-  const ITEM_HEIGHT = 60;
+  const ITEM_HEIGHT = 100;
   const [activeIndex, setActiveIndex] = useState(0);
   const getItemLayout = useCallback(
     (data, index) => ({
@@ -379,10 +379,10 @@ const ItemPersonal = ({ props }) => {
               style={[ip.infomationText, ip.infomationTextMessage]}
               numberOfLines={1}
             >
-              Em chú ý ôn tập để chuẩn bị thi Em chú ý ôn tập để chuẩn bị thi
+              {/* Em chú ý ôn tập để chuẩn bị thi Em chú ý ôn tập để chuẩn bị thi */}
             </Text>
             <Text style={[ip.infomationText, ip.infomationTextDate]}>
-              26/12/2023
+              {/* 26/12/2023 */}
             </Text>
           </View>
         )}
@@ -418,7 +418,6 @@ export const ChatGroupPage = ({ props, route }) => {
   const [refresh, setRefresh] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector((state) => state.currentUser);
-  const [page, setPage] = useState(1);
 
   const handleSetCheckbox = useCallback(
     (value) => {
@@ -471,7 +470,7 @@ export const ChatGroupPage = ({ props, route }) => {
       );
     }, []);
 
-  const ITEM_HEIGHT = 60;
+  const ITEM_HEIGHT = 100;
 
   const getItemLayout = useCallback(
     (data, index) => ({
@@ -513,6 +512,7 @@ export const ChatGroupPage = ({ props, route }) => {
     };
     let res = await ChatService.ServiceChat.SetRoom(obj);
     if (res) {
+      nav.pop(Screens.ChatGroupPage);
       nav.navigate(Screens.ChatPersonalPage, {
         props: {
           ...props,
@@ -671,14 +671,21 @@ export const ChatGroupPage = ({ props, route }) => {
               getItemLayout={getItemLayout}
               keyExtractor={(item, index) => createGuid()}
               ListFooterComponent={<View></View>}
+              ListEmptyComponent={
+                <View>
+                  <Text>Không có dữ liệu..!</Text>
+                </View>
+              }
             />
           </View>
-          <Button
-            text={TextButton.Accept}
-            onPress={() => {
-              handleAcceptGroup();
-            }}
-          />
+          {getDataFlatlist && (
+            <Button
+              text={TextButton.Accept}
+              onPress={() => {
+                handleAcceptGroup();
+              }}
+            />
+          )}
         </View>
       </SafeAreaView>
     </>

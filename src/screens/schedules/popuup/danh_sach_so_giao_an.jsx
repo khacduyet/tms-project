@@ -76,7 +76,7 @@ const ListGiaoAn = ({ item }) => {
                     <View style={giaoan.caption}><Text>Trình độ: {item.TenCapGiangDay}</Text></View>
                     <View style={giaoan.caption}><Text>Hình thức: {item.TenHinhThucDaoTao}</Text></View>
                     <View style={giaoan.caption}><Text>Loại sổ: {item.TenLoaiSo}</Text></View>
-                    <View style={giaoan.caption}><Text>số sổ: {item.SoSo}</Text></View>
+                    <View style={giaoan.caption}><Text>Số sổ: {item.SoSo}</Text></View>
                     <View style={giaoan.caption}><Text>Số chương: {item.SoChuong}</Text></View>
                     <View style={giaoan.caption}><Text>Số bài: {item.SoBai}</Text></View>
                 </View>

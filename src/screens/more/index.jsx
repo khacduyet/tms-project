@@ -93,7 +93,7 @@ export default function HomeMore() {
                 {currentUser && currentUser.TenNhanVien}
               </Text>
               <Text style={[styles.navText]} numberOfLines={1}>
-                MSV: {currentUser && currentUser.MaNhanVien}
+                MGV: {currentUser && currentUser.MaNhanVien}
               </Text>
               {/* <Text style={[styles.navText]} numberOfLines={1}>
                 Lớp: C22-Han-01

@@ -38,7 +38,7 @@ import {
 import { socket } from "./socket";
 import { QuyTrinhServices } from "../../services/danhmuc.service";
 import { ChatService } from "../../services/chat.service";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ModalGeneral } from "../../common/modal";
 import { TextInput } from "@react-native-material/core";
 
@@ -47,9 +47,11 @@ export default function ChatPage() {
   const [filter, setFilter] = useState({
     keyword: null,
   });
-  const currentUser = useSelector((state) => state.currentUser);
   const [refresh, setRefresh] = useState(false);
-  const [listRoom, setListRoom] = useState([]);
+  const currentUser = useSelector((state) => state.currentUser);
+  const listRoom = useSelector((state) => state.listRoom);
+  const dispatch = useDispatch();
+  // const [listRoom, setListRoom] = useState([]);
   const [listUserCanChat, setListUserCanChat] = useState([]);
   const [listGiaoVien, setListGiaoVien] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -70,7 +72,8 @@ export default function ChatPage() {
       IdUser: currentUser.Id,
     });
     if (res) {
-      setListRoom(res.Data);
+      dispatch(setListRoom(res.Data));
+      // setListRoom(res.Data);
     }
   };
 
@@ -409,9 +412,11 @@ const group = StyleSheet.create({
 });
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { setListRoom } from "../../redux/actions/chatAction";
 export const ChatGroupPage = ({ props, route }) => {
   const nav = useNavigation();
   const { listGiaoVien, listUserCanChat } = route.params;
+  const dispatch = useDispatch();
   const [keyword, setKeyword] = useState(null);
   const [nameGroup, setNameGroup] = useState(null);
   const [listChoose, setListChoose] = useState([]);
@@ -512,6 +517,10 @@ export const ChatGroupPage = ({ props, route }) => {
     };
     let res = await ChatService.ServiceChat.SetRoom(obj);
     if (res) {
+      let lstRoom = await ChatService.ServiceChat.GetDSRoom({
+        IdUser: currentUser.Id,
+      });
+      if (lstRoom) dispatch(setListRoom(lstRoom.Data));
       nav.pop(Screens.ChatGroupPage);
       nav.navigate(Screens.ChatPersonalPage, {
         props: {

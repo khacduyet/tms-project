@@ -58,9 +58,9 @@ export const QuyTrinhServices = {
             let _header = await getHeaders();
             return post(qlsv + `/QuanLySinhVien/GetThoiKhoaBieuSV`, data, _header)
         },
-        GetThoiKhoaBieuSVToDay: async () => {
+        GetThoiKhoaBieuSVToDay: async (id) => {
             let _header = await getHeaders();
-            return get(qlsv + `/QuanLySinhVien/GetThoiKhoaBieuSVToDay`, _header)
+            return get(kbgg + `/QuanLySinhVien/GetThoiKhoaBieuSVToDay?IdSinhVien=` + id, _header)
         },
     },
     KetQuaHocTap: {

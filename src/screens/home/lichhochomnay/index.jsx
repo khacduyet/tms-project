@@ -13,14 +13,18 @@ import { formatDateStringGMT } from "../../../common/common";
 import { Colors, height, Screens, width } from "../../../common/constant";
 import { QuyTrinhServices } from "../../../services/danhmuc.service";
 import { ItemChildSchedule, ItemSchedule } from "../../schedules";
+import { useSelector } from "react-redux";
 
 export default function LichHocHomNayComponent({ props }) {
   const nav = useNavigation();
   const [today, setToday] = useState([]);
   const [loading, setLoading] = useState(true);
+  const currentUser = useSelector((state) => state.currentUser);
 
   const getData = async () => {
-    let res = await QuyTrinhServices.ThoiKhoaBieu.GetThoiKhoaBieuSVToDay();
+    let res = await QuyTrinhServices.ThoiKhoaBieu.GetThoiKhoaBieuSVToDay(
+      currentUser.Id
+    );
     if (res) {
       setToday(res);
     }
@@ -73,7 +77,7 @@ export default function LichHocHomNayComponent({ props }) {
                 height: "80%",
               }}
             >
-              <Text style={{ color: "#fff" }}>Không có lịch học hôm nay!</Text>
+              <Text style={{ color: "#fff" }}>Không có lịch dạy hôm nay!</Text>
             </View>
           )}
           <ScrollView

@@ -34,6 +34,7 @@ import {
   formatDateStringGMT,
   getFirstCharacterByName,
   getTypeToDate,
+  getUniqueArrayProp,
 } from "../../common/common";
 import { socket } from "./socket";
 import { QuyTrinhServices } from "../../services/danhmuc.service";
@@ -109,7 +110,7 @@ export default function ChatPage() {
     let obj = {
       IdChuRoom: currentUser.Id,
       isGroup: false,
-      isSinhVien: true,
+      isSinhVien: false,
       listLop: [],
       listUser: [
         {
@@ -118,7 +119,7 @@ export default function ChatPage() {
         },
         {
           IdUser: item.Id,
-          TenUser: item.TenNhanVien,
+          TenUser: props.isSinhVien ? item.Ten : item.TenNhanVien,
         },
       ],
     };
@@ -232,8 +233,6 @@ export default function ChatPage() {
 }
 
 const ModalAddChat = ({ props }) => {
-  const [listGV, setListGV] = useState(props.listGV);
-  const [listSV, setListSV] = useState(props.listSV.ListSinhVien);
   const [keyword, setKeyword] = useState(null);
   const ITEM_HEIGHT = 100;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -246,29 +245,30 @@ const ModalAddChat = ({ props }) => {
     []
   );
 
-  useEffect(() => {
+  const getListFlatList = useMemo(() => {
+    let _listSinhVien = getUniqueArrayProp(props.listSV.ListSinhVien, "Id");
     if (activeIndex === 0) {
       if (keyword) {
-        let newLst = props.listSV.ListSinhVien.filter((x) =>
+        let newLst = _listSinhVien.filter((x) =>
           x.Ten.toLowerCase().trim().includes(keyword.toLowerCase().trim())
         );
-        setListSV(newLst);
-        return;
+        return newLst;
       }
-      setListSV(props.listSV.ListSinhVien);
-      return;
+      return _listSinhVien;
     }
+    let _listGV = props.listGV;
+    // _listGV = _listGV.filter((x, index) => index < 10);
     if (keyword) {
-      let newLst = props.listGV.filter((x) =>
+      let newLst = _listGV.filter((x) =>
         x.TenNhanVien.toLowerCase()
           .trim()
           .includes(keyword.toLowerCase().trim())
       );
-      setListGV(newLst);
-      return;
+      return newLst;
     }
-    setListGV(props.listGV);
-  }, [keyword]);
+    return _listGV;
+  }, [keyword, activeIndex]);
+
   return (
     <View
       style={[
@@ -310,7 +310,7 @@ const ModalAddChat = ({ props }) => {
       <Text style={{ padding: 3 }}>Gợi ý: </Text>
       <FlatList
         style={{ maxHeight: height / 2 }}
-        data={activeIndex === 0 ? listSV : listGV}
+        data={getListFlatList}
         showsVerticalScrollIndicator={false}
         maxToRenderPerBatch={30}
         windowSize={21}
@@ -322,11 +322,14 @@ const ModalAddChat = ({ props }) => {
               currentUser: props.currentUser,
               hasShowName: true,
               handleCreateNewRoom: props.handleCreateNewRoom,
+              isSinhVien: activeIndex === 0,
             }}
           />
         )}
         getItemLayout={getItemLayout}
-        keyExtractor={(item, index) => `ListGeneral` + item.item?.Created}
+        keyExtractor={(item, index) => {
+          return `ListGeneral` + item?.Id;
+        }}
         ListEmptyComponent={ListEmptyComponent}
         ListFooterComponent={<View></View>}
       />
@@ -365,6 +368,35 @@ const ItemPersonal = ({ props }) => {
       props: props,
     });
   };
+
+  // const getItem = useMemo(() => {
+  //   return (
+  //     <TouchableOpacity style={[ip.container]} onPress={handleOnClick}>
+  //       <ThisAvatar url={props.item.item.Anh} size={60} name={_thisBox} />
+  //       <View style={[ip.infomation]}>
+  //         <View style={[ip.infomationTop]}>
+  //           <Text style={[ip.infomationText]} numberOfLines={1}>
+  //             {_thisBox}
+  //           </Text>
+  //           {/* <Text style={[ip.infomationText, { color: "red" }]}> (5)</Text> */}
+  //         </View>
+  //         {!props.hasShowName && (
+  //           <View style={[ip.infomationBottom]}>
+  //             <Text
+  //               style={[ip.infomationText, ip.infomationTextMessage]}
+  //               numberOfLines={1}
+  //             >
+  //               {/* Em chú ý ôn tập để chuẩn bị thi Em chú ý ôn tập để chuẩn bị thi */}
+  //             </Text>
+  //             <Text style={[ip.infomationText, ip.infomationTextDate]}>
+  //               {/* 26/12/2023 */}
+  //             </Text>
+  //           </View>
+  //         )}
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // }, []);
 
   return (
     <TouchableOpacity style={[ip.container]} onPress={handleOnClick}>
@@ -410,6 +442,7 @@ const group = StyleSheet.create({
     borderBottomWidth: 0.7,
   },
 });
+
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { setListRoom } from "../../redux/actions/chatAction";
@@ -424,56 +457,51 @@ export const ChatGroupPage = ({ props, route }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const currentUser = useSelector((state) => state.currentUser);
 
-  const handleSetCheckbox = useCallback(
-    (value) => {
-      if (!listChoose.find((x) => x.Id === value.Id)) {
-        let a = [
-          ...listChoose,
-          {
-            ...value,
-            isSinhVien: activeIndex === 0,
-          },
-        ];
-        setListChoose(a);
-      } else {
-        let temp = listChoose;
-        let idx = temp.findIndex((x) => x === value).Id;
-        if (idx !== -1) {
-          temp.splice(idx, 1);
-          setListChoose(temp);
-        }
-      }
-      setRefresh(!refresh);
-    },
-    [refresh]
-  );
+  const handleSetCheckbox = (value) => {
+    let temp = listChoose;
+    let findIndx = temp.findIndex((x) => x.Id === value.Id);
+    if (findIndx === -1) {
+      let a = [
+        ...listChoose,
+        {
+          ...value,
+          isSinhVien: activeIndex === 0,
+        },
+      ];
+      setListChoose(a);
+    } else {
+      temp.splice(findIndx, 1);
+      setListChoose(temp);
+    }
+    setRefresh(!refresh);
+  };
 
-  const RenderItem = ({ item }) =>
-    useMemo(() => {
-      return (
-        <TouchableOpacity
-          key={item.item.Id}
-          style={[ip.container]}
-          onPress={() => handleSetCheckbox(item.item)}
-        >
-          <ThisAvatar
-            // url={item.item.Anh}
-            size={60}
-            name={item.item?.Ten || item.item?.TenNhanVien}
-          />
-          <View style={[ip.infomation]}>
-            <View style={[ip.infomationTop]}>
-              <Text style={[ip.infomationText]} numberOfLines={1}>
-                {item.item?.Ten || item.item?.TenNhanVien}
-              </Text>
-            </View>
-          </View>
-          {listChoose.find((x) => x.Id === item.item.Id) && (
-            <AntDesign name="checkcircle" size={20} color="green" />
-          )}
-        </TouchableOpacity>
-      );
-    }, []);
+  // const RenderItem = ({ item }) =>
+  //   useMemo(() => {
+  //     return (
+  //       <TouchableOpacity
+  //         key={item.item.Id}
+  //         style={[ip.container]}
+  //         onPress={() => handleSetCheckbox(item.item)}
+  //       >
+  //         <ThisAvatar
+  //           // url={item.item.Anh}
+  //           size={60}
+  //           name={item.item?.Ten || item.item?.TenNhanVien}
+  //         />
+  //         <View style={[ip.infomation]}>
+  //           <View style={[ip.infomationTop]}>
+  //             <Text style={[ip.infomationText]} numberOfLines={1}>
+  //               {item.item?.Ten || item.item?.TenNhanVien}
+  //             </Text>
+  //           </View>
+  //         </View>
+  //         {listChoose.find((x) => x.Id === item.item.Id) && (
+  //           <AntDesign name="checkcircle" size={20} color="green" />
+  //         )}
+  //       </TouchableOpacity>
+  //     );
+  //   }, []);
 
   const ITEM_HEIGHT = 100;
 
@@ -535,18 +563,71 @@ export const ChatGroupPage = ({ props, route }) => {
 
   const getDataFlatlist = useMemo(() => {
     let _listGiaoVien = listGiaoVien.filter((x) => x.Id !== currentUser.Id);
+    let _listSinhVien = getUniqueArrayProp(listUserCanChat.ListSinhVien, "Id");
     return keyword
       ? activeIndex === 0
-        ? listUserCanChat.ListSinhVien.filter((x) =>
-            x.Ten.toLowerCase().trim().includes(keyword)
+        ? _listSinhVien.filter((x) =>
+            x.Ten.toLowerCase().trim().includes(keyword.toLowerCase().trim())
           )
         : _listGiaoVien.filter((x) =>
-            x.TenNhanVien.toLowerCase().trim().includes(keyword)
+            x.TenNhanVien.toLowerCase()
+              .trim()
+              .includes(keyword.toLowerCase().trim())
           )
       : activeIndex === 0
-      ? listUserCanChat.ListSinhVien
+      ? _listSinhVien
       : _listGiaoVien;
   }, [keyword, activeIndex]);
+
+  const getAreaSelected = useMemo(() => {
+    return listChoose.length > 0 ? (
+      <View
+        style={{
+          height: 80,
+        }}
+      >
+        <ScrollView horizontal scrollEventThrottle={16}>
+          {listChoose.map((x) => {
+            return (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: 5,
+                }}
+              >
+                <TouchableOpacity onPress={() => handleSetCheckbox(x)}>
+                  <ThisAvatar
+                    // url={item.item.Anh}
+                    size={60}
+                    name={x.Ten || x?.TenNhanVien}
+                  />
+                  <FontAwesome
+                    name="times-circle"
+                    size={24}
+                    color="red"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      backgroundColor: "#fff",
+                      zIndex: 2,
+                      borderRadius: 50,
+                    }}
+                  />
+                </TouchableOpacity>
+                <Text>
+                  {getFirstCharacterByName(x.Ten || x.TenNhanVien, true)}
+                </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    ) : (
+      <></>
+    );
+  }, [refresh, listChoose]);
 
   return (
     <>
@@ -598,54 +679,7 @@ export const ChatGroupPage = ({ props, route }) => {
                 },
               }}
             />
-            {listChoose.length > 0 && (
-              <View
-                style={{
-                  height: 80,
-                }}
-              >
-                <ScrollView horizontal scrollEventThrottle={16}>
-                  {listChoose.map((x) => {
-                    return (
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          margin: 5,
-                        }}
-                      >
-                        <TouchableOpacity onPress={() => handleSetCheckbox(x)}>
-                          <ThisAvatar
-                            // url={item.item.Anh}
-                            size={60}
-                            name={x.Ten || x?.TenNhanVien}
-                          />
-                          <FontAwesome
-                            name="times-circle"
-                            size={24}
-                            color="red"
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              right: 0,
-                              backgroundColor: "#fff",
-                              zIndex: 2,
-                              borderRadius: 50,
-                            }}
-                          />
-                        </TouchableOpacity>
-                        <Text>
-                          {getFirstCharacterByName(
-                            x.Ten || x.TenNhanVien,
-                            true
-                          )}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-            )}
+            {getAreaSelected}
             <View style={[group.container]}>
               <TouchableOpacity
                 style={[
@@ -676,9 +710,17 @@ export const ChatGroupPage = ({ props, route }) => {
               initialNumToRender={10}
               data={getDataFlatlist}
               showsVerticalScrollIndicator={false}
-              renderItem={(item) => <RenderItem item={item} />}
+              renderItem={(item) => (
+                <RenderItem
+                  item={item}
+                  listChoose={listChoose}
+                  handleSetCheckbox={handleSetCheckbox}
+                  refresh={refresh}
+                  setRefresh={setRefresh}
+                />
+              )}
               getItemLayout={getItemLayout}
-              keyExtractor={(item, index) => createGuid()}
+              keyExtractor={(item, index) => `${item.TenNhanVien}${index}`}
               ListFooterComponent={<View></View>}
               ListEmptyComponent={
                 <View>
@@ -699,6 +741,63 @@ export const ChatGroupPage = ({ props, route }) => {
       </SafeAreaView>
     </>
   );
+};
+
+const RenderItem = (props) => {
+  const [isCheck, setIsCheck] = useState(false);
+  let item = props.item;
+  let listChoose = props.listChoose;
+
+  const handleSetCheckbox = () => {
+    setIsCheck(!isCheck);
+    props.handleSetCheckbox(item.item);
+  };
+
+  const getInfo = useMemo(() => {
+    return (
+      <>
+        <ThisAvatar
+          // url={item.item.Anh}
+          size={60}
+          name={item.item?.Ten || item.item?.TenNhanVien}
+        />
+        <View style={[ip.infomation]}>
+          <View style={[ip.infomationTop]}>
+            <Text style={[ip.infomationText]} numberOfLines={1}>
+              {item.item?.Ten || item.item?.TenNhanVien}
+            </Text>
+          </View>
+        </View>
+      </>
+    );
+  }, []);
+
+  const getRenderItem = useMemo(() => {
+    return (
+      <TouchableOpacity
+        key={item.item.Id}
+        style={[ip.container]}
+        onPress={handleSetCheckbox}
+      >
+        {getInfo}
+        {isCheck && <AntDesign name="checkcircle" size={20} color="green" />}
+        {/* {listChoose.find((x) => x.Id === item.item.Id) && (
+          <AntDesign name="checkcircle" size={20} color="green" />
+        )} */}
+      </TouchableOpacity>
+    );
+  }, [isCheck, props.refresh]);
+
+  useEffect(() => {
+    let _listId = listChoose.map((x) => {
+      return x.Id;
+    });
+    if (!_listId.includes(item.item.Id)) {
+      setIsCheck(false);
+    }
+  }, [props.refresh]);
+
+  return getRenderItem;
 };
 
 export const ChatPersonalPage = ({ route }) => {
@@ -741,6 +840,7 @@ export const ChatPersonalPage = ({ route }) => {
       room: currentRoom,
     });
   };
+
   const LeaveRoom = () => {
     socketRef.current.emit("leaveRoom", {});
   };
@@ -926,7 +1026,9 @@ export const ChatPersonalPage = ({ route }) => {
                 }
                 return <MyBoxChat props={{ item: item, type: _OBJDATE }} />;
               }}
-              keyExtractor={(item, index) => `ListChat` + item.item?.Created}
+              keyExtractor={(item, index) => {
+                return `ListChat` + item?.Created;
+              }}
               ListEmptyComponent={ListEmptyComponent}
               ListFooterComponent={
                 <View style={{ width: "100%", height: 10 }}></View>

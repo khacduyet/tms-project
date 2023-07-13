@@ -177,4 +177,16 @@ export function getTypeToDate(datestring) {
     return formatDateStringGMT(date, 'dd/mm/yyyy')
 }
 
+export function getUniqueArrayProp(array, property) {
+    var unique = {};
+    var distinct = [];
+    for (var i in array) {
+        if (typeof (unique[array[i][property]]) == "undefined") {
+            distinct.push(array[i]);
+        }
+        unique[array[i][property]] = 0;
+    }
+    return distinct;
+}
+
 export const APP_NAME = `Ứng dụng quản lý giáo viên`
